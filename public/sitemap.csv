@@ -1,0 +1,27 @@
+Page,URL Path,Parent Section,Status
+Home,/,,Active
+The Tower,/tower,The Tower,Active
+Origins,/tower/origins,The Tower,Active
+Rising,/tower/rising,The Tower,Active
+"Design & Engineering",/tower/design,The Tower,Active
+Sustainability,/tower/sustainability,The Tower,Active
+"Awards & Recognition",/tower/recognition,The Tower,Active
+"Technical Dashboard",/tower/dashboard,The Tower,Active
+"Workplace Experience",/business/workplace-experience,Business,Active
+"Office Spaces",/business/office-spaces,Business,Active
+"Vertical Transportation",/business/vertical-transportation,Business,Active
+Connectivity,/business/connectivity,Business,Active
+"Services & Facilities",/services,Experience,Active
+"Location & Access",/location,Experience,Active
+"Leasing Opportunities",/leasing/opportunities,Leasing,Active
+Inquiry,/leasing/inquiry,Leasing,Active
+Downloads,/leasing/downloads,Leasing,Active
+Contact,/leasing/contact,Leasing,Active
+Presentation,/presentation,,Active
+"Business (redirect)",/business,Business,Redirect → /business/workplace-experience
+"Leasing (redirect)",/leasing,Leasing,Redirect → /leasing/opportunities
+"Contact (redirect)",/contact,Leasing,Redirect → /leasing/contact
+"Architecture (redirect)",/tower/architecture,The Tower,Redirect → /tower/design
+"Engineering (redirect)",/tower/engineering,The Tower,Redirect → /tower/design
+"Perspective (redirect)",/perspective,,Redirect → /tower/rising
+"Legacy (redirect)",/legacy,,Redirect → /tower/rising
