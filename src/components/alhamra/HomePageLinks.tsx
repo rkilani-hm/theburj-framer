@@ -8,90 +8,78 @@ import somTowerSkyline from "@/assets/som-tower-skyline.jpg";
 import interiorLobby from "@/assets/interior-lobby.jpg";
 import towerEntranceFountain from "@/assets/tower-entrance-fountain.jpg";
 import skylineReflection from "@/assets/skyline-reflection.png";
+import towerAerialSunset from "@/assets/tower-aerial-sunset.png";
 
 interface PageLinkItem {
   number: string;
+  location: string;
   title: string;
-  subtitle: string;
-  description: string;
   image: string;
   link: string;
-  cta: string;
 }
 
 const HomePageLinks = () => {
-  const { t } = useLanguage();
+  const { language } = useLanguage();
   const { ref: sectionRef, isInView } = useScrollReveal();
 
   const pages: PageLinkItem[] = [
     {
-      number: "01",
-      title: t("home.link.tower.title") || "The Tower",
-      subtitle: t("home.link.tower.subtitle") || "Architecture & Engineering",
-      description: t("home.link.tower.desc") || "A sculpted masterpiece by SOM — where climate-responsive design meets structural innovation. Discover the story behind Kuwait's tallest landmark.",
+      number: "/01",
+      location: language === "en" ? "Architecture & Engineering" : "العمارة والهندسة",
+      title: language === "en" ? "The Tower" : "البرج",
       image: somTowerSkyline,
       link: "/tower",
-      cta: t("home.link.tower.cta") || "Explore the Tower",
     },
     {
-      number: "02",
-      title: t("home.link.business.title") || "Business",
-      subtitle: t("home.link.business.subtitle") || "Workspace & Enterprise",
-      description: t("home.link.business.desc") || "Premium office environments designed for the demands of modern enterprise. Flexible floor plates, vertical connectivity, and an address that commands respect.",
+      number: "/02",
+      location: language === "en" ? "Workspace & Enterprise" : "بيئة العمل والأعمال",
+      title: language === "en" ? "Business Experience" : "تجربة الأعمال",
       image: interiorLobby,
-      link: "/business",
-      cta: t("home.link.business.cta") || "Discover the Workspace",
+      link: "/business/workplace-experience",
     },
     {
-      number: "03",
-      title: t("home.link.experience.title") || "Experience",
-      subtitle: t("home.link.experience.subtitle") || "Services & Sustainability",
-      description: t("home.link.experience.desc") || "Beyond workspace — a complete ecosystem. From 24/7 concierge to smart building systems, every detail calibrated for seamless daily operations.",
+      number: "/03",
+      location: language === "en" ? "Services & Sustainability" : "الخدمات والاستدامة",
+      title: language === "en" ? "Facilities & Services" : "المرافق والخدمات",
       image: towerEntranceFountain,
       link: "/services",
-      cta: t("home.link.experience.cta") || "Experience the Services",
     },
     {
-      number: "04",
-      title: t("home.link.leasing.title") || "Leasing",
-      subtitle: t("home.link.leasing.subtitle") || "Opportunities & Inquiry",
-      description: t("home.link.leasing.desc") || "A limited collection of premium office spaces at Kuwait's most prestigious commercial address. Request availability and schedule a private viewing.",
+      number: "/04",
+      location: language === "en" ? "Opportunities & Inquiry" : "الفرص والاستفسار",
+      title: language === "en" ? "Leasing" : "التأجير",
       image: skylineReflection,
-      link: "/leasing",
-      cta: t("home.link.leasing.cta") || "View Opportunities",
+      link: "/leasing/opportunities",
+    },
+    {
+      number: "/05",
+      location: language === "en" ? "Location & Connectivity" : "الموقع والاتصال",
+      title: language === "en" ? "Location & Access" : "الموقع والوصول",
+      image: towerAerialSunset,
+      link: "/location",
     },
   ];
 
   return (
-    <section className="py-section bg-background">
+    <section className="py-24 lg:py-32 bg-background">
       <div className="container mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <motion.div
           ref={sectionRef}
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-20"
+          className="mb-16"
         >
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="w-12 h-px bg-border" />
-            <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-              {t("home.links.label") || "Explore"}
-            </span>
-            <div className="w-12 h-px bg-border" />
-          </div>
-          <h2 className="text-headline font-light tracking-wide text-foreground mb-4">
-            {t("home.links.title") || "Arrive. Ascend. Belong."}
-          </h2>
-          <p className="text-body text-muted-foreground max-w-xl mx-auto">
-            {t("home.links.subtitle") || "Four dimensions of an exceptional address."}
-          </p>
+          <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+            {language === "en" ? "EXPLORE" : "استكشف"}
+          </span>
         </motion.div>
 
-        {/* Page Links Grid */}
-        <div className="space-y-0">
+        {/* Project List - Crestline numbered style */}
+        <div className="divide-y divide-border">
           {pages.map((page, index) => (
-            <PageLinkCard key={page.number} page={page} index={index} />
+            <ProjectRow key={page.number} page={page} index={index} />
           ))}
         </div>
       </div>
@@ -99,61 +87,41 @@ const HomePageLinks = () => {
   );
 };
 
-const PageLinkCard = ({ page, index }: { page: PageLinkItem; index: number }) => {
-  const { ref, isInView } = useScrollReveal({ margin: "-80px" });
-  const isEven = index % 2 === 0;
+const ProjectRow = ({ page, index }: { page: PageLinkItem; index: number }) => {
+  const { ref, isInView } = useScrollReveal({ margin: "-50px" });
 
   return (
     <Link to={page.link} className="block group">
       <motion.div
         ref={ref}
-        initial="hidden"
-        animate={isInView ? "visible" : "hidden"}
-        variants={revealVariants.fadeUp}
-        transition={{ duration: 0.7, delay: 0.1 }}
-        className="grid lg:grid-cols-2 gap-0 border-t border-border last:border-b"
+        initial={{ opacity: 0, y: 20 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        transition={{ duration: 0.5, delay: index * 0.08 }}
+        className="grid grid-cols-12 gap-4 items-center py-8 lg:py-10 group-hover:bg-secondary/30 transition-colors duration-300 -mx-6 px-6 lg:-mx-12 lg:px-12"
       >
-        {/* Image */}
-        <div className={`relative overflow-hidden aspect-[16/9] lg:aspect-auto lg:min-h-[360px] ${isEven ? "" : "lg:order-2"}`}>
-          <motion.img
-            src={page.image}
-            alt={page.title}
-            className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
-          />
-          {/* Number overlay */}
-          <div className="absolute top-6 left-6 lg:top-8 lg:left-8">
-            <span className="text-6xl lg:text-8xl font-light text-background/20 leading-none select-none">
-              {page.number}
-            </span>
-          </div>
-          {/* Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+        {/* Number */}
+        <div className="col-span-2 lg:col-span-1">
+          <span className="text-sm font-sans text-muted-foreground">{page.number}</span>
         </div>
 
-        {/* Content */}
-        <div className={`flex flex-col justify-center p-8 lg:p-16 bg-secondary group-hover:bg-background transition-colors duration-500 ${isEven ? "" : "lg:order-1"}`}>
-          <motion.div
-            initial={{ opacity: 0, x: isEven ? 20 : -20 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: isEven ? 20 : -20 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-3 block">
-              {page.subtitle}
-            </span>
+        {/* Location/Category */}
+        <div className="col-span-10 lg:col-span-3">
+          <span className="text-sm text-muted-foreground">{page.location}</span>
+        </div>
 
-            <h3 className="text-subheadline font-light text-foreground mb-4 tracking-wide">
-              {page.title}
-            </h3>
+        {/* Title */}
+        <div className="col-span-12 lg:col-span-5 lg:col-start-5">
+          <h3 className="text-xl lg:text-2xl font-serif font-medium text-foreground group-hover:translate-x-2 transition-transform duration-300">
+            {page.title}
+          </h3>
+        </div>
 
-            <p className="text-body text-muted-foreground leading-relaxed mb-8 max-w-md">
-              {page.description}
-            </p>
-
-            <div className="inline-flex items-center gap-3 text-foreground group-hover:text-primary transition-colors duration-300">
-              <span className="text-sm uppercase tracking-wider">{page.cta}</span>
-              <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-2" />
-            </div>
-          </motion.div>
+        {/* Arrow */}
+        <div className="hidden lg:flex col-span-1 col-start-12 justify-end">
+          <ArrowRight 
+            size={18} 
+            className="text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all duration-300" 
+          />
         </div>
       </motion.div>
     </Link>

@@ -1,133 +1,105 @@
 import { useLanguage } from "@/contexts/LanguageContext";
-import { ChevronDown } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
-import heroVideo from "@/assets/hero-video.mp4";
+import { motion } from "framer-motion";
 
-const LetterDrop = ({ text, className, delay = 0 }: { text: string; className?: string; delay?: number }) => {
-  const letters = text.split("");
-  
-  return (
-    <span className={className}>
-      {letters.map((letter, index) => (
-        <motion.span
-          key={index}
-          initial={{ opacity: 0, y: -80 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 1.2,
-            delay: delay + index * 0.05,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          className="inline-block"
-          style={{ whiteSpace: letter === " " ? "pre" : "normal" }}
-        >
-          {letter === " " ? "\u00A0" : letter}
-        </motion.span>
-      ))}
-    </span>
-  );
-};
-
-const RotatingText = ({ 
-  texts, 
-  currentIndex, 
-  initialDelay = 0.5 
-}: { 
-  texts: string[]; 
-  currentIndex: number; 
-  initialDelay?: number;
-}) => {
-  return (
-    <AnimatePresence mode="wait">
-      <motion.span
-        key={currentIndex}
-        initial={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
-        className="inline-block"
-      >
-        <LetterDrop key={`${currentIndex}-${texts[currentIndex]}`} text={texts[currentIndex]} delay={initialDelay} />
-      </motion.span>
-    </AnimatePresence>
-  );
-};
-
-const HeroContent = () => {
-  const { t } = useLanguage();
-  const [currentIndex, setCurrentIndex] = useState(0);
-  
-  const headlines = [t("hero.headline"), t("hero.headline2")];
-  const sublines = [t("hero.subline"), t("hero.subline2")];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % headlines.length);
-    }, 20000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [headlines.length]);
-
-  return (
-    <motion.div 
-      className="relative z-10 text-left container mx-auto px-6 lg:px-12 w-full"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <h1 className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-foreground">
-        <RotatingText texts={headlines} currentIndex={currentIndex} initialDelay={0.8} />
-      </h1>
-      <p className="mt-8 text-body-lg text-foreground/80 font-light tracking-wide">
-        <RotatingText texts={sublines} currentIndex={currentIndex} initialDelay={1.6} />
-      </p>
-    </motion.div>
-  );
-};
+import towerLowangle from "@/assets/tower-lowangle-clouds.png";
+import somTowerDetail from "@/assets/som-tower-detail.jpg";
+import interiorLobby from "@/assets/interior-lobby.jpg";
+import towerFacadeDetail from "@/assets/tower-facade-detail.jpg";
 
 const HeroSection = () => {
-  const { t } = useLanguage();
+  const { language } = useLanguage();
+
+  const headline = language === "en" 
+    ? "Where Architectural Gravity Meets Enduring Presence, Your Business Journey Starts Here."
+    : "حيث تلتقي الهيبة المعمارية بالحضور الدائم، تبدأ رحلتك التجارية هنا.";
+
+  // Split headline into words for justified layout
+  const words = headline.split(" ");
 
   return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Video */}
-      <div className="absolute inset-0">
-        <video
-          src={heroVideo}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          className="w-full h-full object-cover"
-          style={{ opacity: 1 }}
-        />
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/40 via-transparent to-background/40" />
+    <section className="relative bg-background">
+      {/* Hero Text */}
+      <div className="container mx-auto px-6 lg:px-12 pt-32 lg:pt-40 pb-16 lg:pb-24">
+        <motion.h1
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          className="text-[clamp(2rem,5.5vw,5.5rem)] font-sans font-medium uppercase leading-[1.05] tracking-[-0.02em] text-foreground text-justify"
+          style={{ textAlignLast: "left" }}
+        >
+          {words.map((word, i) => (
+            <motion.span
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1 + i * 0.03, ease: [0.16, 1, 0.3, 1] }}
+              className="inline-block"
+            >
+              {word}{i < words.length - 1 ? "\u00A0" : ""}
+            </motion.span>
+          ))}
+        </motion.h1>
       </div>
 
-      {/* Content */}
-      <HeroContent />
+      {/* Staggered Image Grid */}
+      <div className="container mx-auto px-6 lg:px-12 pb-24 lg:pb-32">
+        <div className="grid grid-cols-12 gap-4 lg:gap-6">
+          {/* Left column - two stacked images */}
+          <motion.div
+            initial={{ opacity: 0, y: 60 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="col-span-6 lg:col-span-3 space-y-4 lg:space-y-6"
+          >
+            <div className="aspect-[3/4] overflow-hidden">
+              <img
+                src={towerLowangle}
+                alt="Al Hamra Tower"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+            <div className="aspect-[4/5] overflow-hidden mt-8 lg:mt-16">
+              <img
+                src={interiorLobby}
+                alt="Tower interior"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+          </motion.div>
 
-      {/* Scroll Indicator */}
-      <motion.div 
-        className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.5, duration: 0.8 }}
-      >
-        <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-          {t("hero.scroll") || "Scroll"}
-        </span>
-        <div className="w-px h-12 bg-gradient-to-b from-muted-foreground to-transparent animate-line-grow origin-top" />
-        <ChevronDown size={16} className="text-muted-foreground animate-bounce" style={{ animationDuration: "2s" }} />
-      </motion.div>
+          {/* Center-right - larger offset image */}
+          <motion.div
+            initial={{ opacity: 0, y: 80 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="col-span-6 lg:col-span-4 lg:col-start-5 pt-12 lg:pt-24"
+          >
+            <div className="aspect-[3/4] overflow-hidden">
+              <img
+                src={somTowerDetail}
+                alt="Tower facade detail"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+          </motion.div>
 
-      {/* Architectural Grid Overlay (subtle) */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.02] architectural-grid" />
+          {/* Right column - offset image */}
+          <motion.div
+            initial={{ opacity: 0, y: 60 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="hidden lg:block col-span-3 col-start-10 pt-6"
+          >
+            <div className="aspect-[3/4] overflow-hidden">
+              <img
+                src={towerFacadeDetail}
+                alt="Architectural detail"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+          </motion.div>
+        </div>
+      </div>
     </section>
   );
 };
