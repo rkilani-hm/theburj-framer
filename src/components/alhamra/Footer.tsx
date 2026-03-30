@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ArrowUp } from "lucide-react";
+import alHamraLogo from "@/assets/al-hamra-logo.png";
 
 const Footer = () => {
   const { language, t } = useLanguage();
@@ -58,9 +59,16 @@ const Footer = () => {
         {/* Top: Brand + Back to top */}
         <div className="flex items-start justify-between mb-20">
           <div>
-            <h2 className="text-3xl lg:text-4xl font-sans font-medium uppercase tracking-[0.1em]">
-              Al Hamra
-            </h2>
+            <div className="flex items-center gap-4">
+              <img 
+                src={alHamraLogo} 
+                alt="Al Hamra Tower" 
+                className="h-12 lg:h-14 w-auto object-contain brightness-0 invert"
+              />
+              <h2 className="text-3xl lg:text-4xl font-sans font-medium uppercase tracking-[0.1em]">
+                Al Hamra
+              </h2>
+            </div>
             <p className="text-sm text-background/40 mt-2 tracking-wide">
               {language === "en" ? "Kuwait's Architectural Landmark" : "المعلم المعماري للكويت"}
             </p>
