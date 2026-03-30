@@ -1,219 +1,292 @@
-import { Building2, Users, Server, Headphones, Globe, Shield, Zap, Award } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { motion } from "framer-motion";
-import { useScrollReveal, revealVariants } from "@/hooks/useScrollReveal";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import Header from "@/components/alhamra/Header";
+import Footer from "@/components/alhamra/Footer";
 import cityViewInterior from "@/assets/city-view-interior.jpg";
 import towerAerialDay from "@/assets/tower-aerial-day.png";
 import cityLandscape from "@/assets/city-landscape.jpg";
-import Header from "@/components/alhamra/Header";
-import Footer from "@/components/alhamra/Footer";
+import interiorLobby from "@/assets/interior-lobby.jpg";
+import lobbyArches from "@/assets/lobby-arches.jpg";
+import officeCorridor from "@/assets/office-corridor.jpg";
+
+interface Section {
+  id: string;
+  titleEn: string;
+  titleAr: string;
+  descEn: string;
+  descAr: string;
+  image: string;
+}
+
+const sections: Section[] = [
+  {
+    id: "executive-positioning",
+    titleEn: "Executive Positioning",
+    titleAr: "التموضع التنفيذي",
+    descEn: "Al Hamra Tower is where Kuwait's most influential enterprises establish their command centers. The address signals authority, stability, and forward-thinking vision — a statement before a single word is spoken.",
+    descAr: "برج الحمراء هو المكان الذي تؤسس فيه أكثر المؤسسات الكويتية تأثيرًا مراكز قيادتها. العنوان يعبر عن السلطة والاستقرار والرؤية المستقبلية.",
+    image: cityViewInterior,
+  },
+  {
+    id: "curated-environment",
+    titleEn: "Curated Environment",
+    titleAr: "بيئة منسقة",
+    descEn: "Every interaction within the tower is designed with intention. From the marble-clad arrival experience to the climate-controlled corridors, the environment reflects the caliber of its tenants.",
+    descAr: "كل تفاعل داخل البرج مصمم بعناية. من تجربة الوصول المكسوة بالرخام إلى الممرات المكيفة، تعكس البيئة مستوى المستأجرين.",
+    image: interiorLobby,
+  },
+  {
+    id: "concierge-services",
+    titleEn: "Concierge Services",
+    titleAr: "خدمات الكونسيرج",
+    descEn: "A dedicated concierge team operates around the clock, managing visitor protocols, courier logistics, and executive support services. Every detail handled with discretion and precision.",
+    descAr: "فريق كونسيرج مخصص يعمل على مدار الساعة، يدير بروتوكولات الزوار ولوجستيات البريد السريع وخدمات الدعم التنفيذي.",
+    image: lobbyArches,
+  },
+  {
+    id: "security-protocols",
+    titleEn: "Security Protocols",
+    titleAr: "بروتوكولات الأمان",
+    descEn: "Multi-layered security infrastructure including biometric access control, 24/7 CCTV surveillance, and dedicated security personnel at every access point. Enterprise-grade protection as standard.",
+    descAr: "بنية تحتية أمنية متعددة الطبقات تشمل التحكم البيومتري والمراقبة على مدار الساعة وأفراد أمن مخصصين عند كل نقطة وصول.",
+    image: officeCorridor,
+  },
+  {
+    id: "tenant-community",
+    titleEn: "Tenant Community",
+    titleAr: "مجتمع المستأجرين",
+    descEn: "Host to 50+ leading corporations spanning financial services, energy, technology, and consulting. The tenant roster itself creates a network of strategic proximity that amplifies each occupant's reach.",
+    descAr: "يستضيف أكثر من 50 شركة رائدة تشمل الخدمات المالية والطاقة والتكنولوجيا والاستشارات. قائمة المستأجرين نفسها تخلق شبكة قرب استراتيجي.",
+    image: towerAerialDay,
+  },
+  {
+    id: "global-address",
+    titleEn: "A Global Business Address",
+    titleAr: "عنوان أعمال عالمي",
+    descEn: "With direct access to major transportation networks and proximity to government institutions, the tower offers unmatched connectivity for businesses operating at the highest echelons of commerce.",
+    descAr: "مع الوصول المباشر إلى شبكات النقل الرئيسية والقرب من المؤسسات الحكومية، يوفر البرج اتصالًا لا مثيل له للشركات.",
+    image: cityLandscape,
+  },
+];
+
+const stats = [
+  { valueEn: "50+", valueAr: "٥٠+", labelEn: "Leading Companies", labelAr: "شركة رائدة" },
+  { valueEn: "95%", valueAr: "٩٥٪", labelEn: "Occupancy Rate", labelAr: "نسبة الإشغال" },
+  { valueEn: "24/7", valueAr: "٢٤/٧", labelEn: "Operations", labelAr: "العمليات" },
+  { valueEn: "5-Star", valueAr: "٥ نجوم", labelEn: "Service Standard", labelAr: "معيار الخدمة" },
+];
+
+const galleryImages = [
+  { src: cityViewInterior, alt: "Executive office with city views" },
+  { src: lobbyArches, alt: "Grand lobby arches" },
+  { src: towerAerialDay, alt: "Tower aerial perspective" },
+];
 
 const WorkplaceExperience = () => {
-  const { t } = useLanguage();
-  const { ref: headerRef, isInView: headerInView } = useScrollReveal();
-  const { ref: contentRef, isInView: contentInView } = useScrollReveal();
-  const { ref: statsRef, isInView: statsInView } = useScrollReveal();
-  const { ref: additionalRef, isInView: additionalInView } = useScrollReveal();
+  const { language } = useLanguage();
+  const isAr = language === "ar";
+  const [activeSection, setActiveSection] = useState(0);
+  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [expandedMobile, setExpandedMobile] = useState<number | null>(null);
 
-  const items = [
-    {
-      icon: Building2,
-      title: t("business.offices"),
-      description: t("business.offices.desc"),
-    },
-    {
-      icon: Users,
-      title: t("business.environment"),
-      description: t("business.environment.desc"),
-    },
-    {
-      icon: Server,
-      title: t("business.infrastructure"),
-      description: t("business.infrastructure.desc"),
-    },
-    {
-      icon: Headphones,
-      title: t("business.support"),
-      description: t("business.support.desc"),
-    },
-  ];
-
-  const businessStats = [
-    { value: "50+", label: t("business.stat1.label") || "Leading Companies", desc: t("business.stat1.desc") || "Regional and multinational tenants" },
-    { value: "95%", label: t("business.stat2.label") || "Occupancy Rate", desc: t("business.stat2.desc") || "Consistent high demand" },
-    { value: "24/7", label: t("business.stat3.label") || "Operations", desc: t("business.stat3.desc") || "Round-the-clock building services" },
-  ];
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+    sectionRefs.current.forEach((ref, index) => {
+      if (!ref) return;
+      const observer = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActiveSection(index); },
+        { rootMargin: "-40% 0px -40% 0px", threshold: 0 }
+      );
+      observer.observe(ref);
+      observers.push(observer);
+    });
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Header />
-      <main className="pt-24">
-        <section className="bg-background relative">
-          {/* Hero Section */}
-          <div className="py-section texture-noise">
-            <div className="container mx-auto px-6 lg:px-12">
-              <motion.div 
-                ref={headerRef}
-                initial="hidden"
-                animate={headerInView ? "visible" : "hidden"}
-                variants={revealVariants.fadeUp}
-                transition={{ duration: 0.6 }}
-                className="flex items-center gap-4 mb-6"
-              >
-                <div className="w-12 h-px bg-border" />
-              </motion.div>
+      <main>
+        {/* Hero */}
+        <section className="pt-32 lg:pt-40 pb-16 lg:pb-24 bg-background">
+          <div className="container mx-auto px-6 lg:px-12">
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+              className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-8"
+            >
+              {isAr ? "الأعمال / تجربة مكان العمل" : "Business / Workplace Experience"}
+            </motion.p>
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+              className="text-[clamp(2.5rem,6vw,6rem)] font-sans font-medium uppercase leading-[1.05] tracking-[-0.02em] text-foreground max-w-5xl"
+            >
+              {isAr ? "حيث تبدأ المكانة" : "Where Prestige Begins"}
+            </motion.h1>
+          </div>
+        </section>
 
-              <motion.h2 
-                initial="hidden"
-                animate={headerInView ? "visible" : "hidden"}
-                variants={revealVariants.fadeUp}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-headline font-light tracking-wide text-foreground mb-8"
-              >
-                {t("business.title")}
-              </motion.h2>
-
-              <motion.p 
-                initial="hidden"
-                animate={headerInView ? "visible" : "hidden"}
-                variants={revealVariants.fadeUp}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-body-lg text-muted-foreground max-w-2xl mb-20"
-              >
-                {t("business.intro") || "Infrastructure designed for enterprise excellence. Every system engineered with purpose, every service calibrated for the demands of modern business."}
-              </motion.p>
-
-              <div ref={contentRef} className="grid lg:grid-cols-12 gap-12 lg:gap-16">
-                <motion.div 
-                  initial="hidden"
-                  animate={contentInView ? "visible" : "hidden"}
-                  variants={revealVariants.slideLeft}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                  className="lg:col-span-5"
+        {/* Stats Bar */}
+        <section className="bg-foreground py-12">
+          <div className="container mx-auto px-6 lg:px-12">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+              {stats.map((stat, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.1 }}
+                  className="text-center"
                 >
-                  <div className="sticky top-32">
-                    <div className="relative group">
-                      <div className="aspect-[4/3] overflow-hidden bg-muted">
-                        <img
-                          src={cityViewInterior}
-                          alt="Executive office with city views"
-                          className="w-full h-full object-cover transition-transform duration-700 ease-out-expo group-hover:scale-105"
-                        />
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background/90 to-transparent">
-                        <span className="text-sm text-muted-foreground uppercase tracking-wider">
-                          {t("business.caption") || "Premium Workspace"}
-                        </span>
-                      </div>
+                  <p className="text-3xl lg:text-4xl font-light text-background mb-1">
+                    {isAr ? stat.valueAr : stat.valueEn}
+                  </p>
+                  <p className="text-xs uppercase tracking-[0.2em] text-background/60">
+                    {isAr ? stat.labelAr : stat.labelEn}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Scroll-driven editorial sections — Desktop */}
+        <section className="hidden lg:block py-24 bg-background">
+          <div className="container mx-auto px-6 lg:px-12">
+            <div className="grid grid-cols-12 gap-16">
+              {/* Left: Titles */}
+              <div className="col-span-5 space-y-6">
+                {sections.map((section, index) => (
+                  <div
+                    key={section.id}
+                    ref={(el) => { sectionRefs.current[index] = el; }}
+                    className="min-h-[30vh] flex items-start pt-8 cursor-pointer"
+                    onClick={() => setActiveSection(index)}
+                  >
+                    <div>
+                      <span className="text-xs text-muted-foreground/50 tracking-wider block mb-3">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <h3
+                        className={`text-2xl lg:text-3xl font-light tracking-tight transition-colors duration-500 ${
+                          activeSection === index ? "text-foreground" : "text-muted-foreground/30"
+                        }`}
+                      >
+                        {isAr ? section.titleAr : section.titleEn}
+                      </h3>
                     </div>
                   </div>
-                </motion.div>
-
-                <div className="lg:col-span-7">
-                  <div className="grid md:grid-cols-2 gap-x-12 gap-y-16">
-                    {items.map((item, index) => (
-                      <motion.div 
-                        key={index} 
-                        initial="hidden"
-                        animate={contentInView ? "visible" : "hidden"}
-                        variants={revealVariants.fadeUp}
-                        transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
-                        className="group"
-                      >
-                        <div className="flex items-start gap-4 mb-6">
-                          <span className="text-xs text-muted-foreground font-mono mt-1">0{index + 1}</span>
-                          <div className="w-12 h-12 border border-border flex items-center justify-center transition-all duration-300 group-hover:bg-muted group-hover:border-muted-foreground">
-                            <item.icon size={20} className="text-muted-foreground transition-colors duration-300 group-hover:text-foreground" />
-                          </div>
-                        </div>
-                        <h3 className="text-lg font-medium text-foreground mb-3">{item.title}</h3>
-                        <p className="text-muted-foreground leading-relaxed">{item.description}</p>
-                        <div className="mt-6 w-12 h-px bg-border transition-all duration-500 group-hover:w-24 group-hover:bg-muted-foreground" />
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
+                ))}
               </div>
-            </div>
-          </div>
 
-          {/* Stats Section */}
-          <div className="py-section bg-foreground">
-            <div className="container mx-auto px-6 lg:px-12">
-              <motion.div
-                ref={statsRef}
-                initial="hidden"
-                animate={statsInView ? "visible" : "hidden"}
-                variants={revealVariants.fadeUp}
-                transition={{ duration: 0.6 }}
-              >
-                <div className="grid md:grid-cols-3 gap-12 lg:gap-16">
-                  {businessStats.map((stat, index) => (
+              {/* Right: Sticky panel */}
+              <div className="col-span-7">
+                <div className="sticky top-32">
+                  <AnimatePresence mode="wait">
                     <motion.div
-                      key={index}
-                      initial="hidden"
-                      animate={statsInView ? "visible" : "hidden"}
-                      variants={revealVariants.fadeUp}
-                      transition={{ duration: 0.6, delay: 0.1 + index * 0.1 }}
-                      className="text-center"
+                      key={activeSection}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.5 }}
                     >
-                      <p className="text-5xl lg:text-6xl font-light text-background mb-3">{stat.value}</p>
-                      <p className="text-sm uppercase tracking-[0.2em] text-background/80 mb-2">{stat.label}</p>
-                      <p className="text-sm text-background/60">{stat.desc}</p>
+                      <div className="aspect-[4/3] overflow-hidden mb-8">
+                        <img
+                          src={sections[activeSection].image}
+                          alt={sections[activeSection].titleEn}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <p className="text-muted-foreground leading-relaxed max-w-lg">
+                        {isAr ? sections[activeSection].descAr : sections[activeSection].descEn}
+                      </p>
                     </motion.div>
-                  ))}
+                  </AnimatePresence>
                 </div>
-              </motion.div>
+              </div>
             </div>
           </div>
+        </section>
 
-          {/* Global Address Section */}
-          <div ref={additionalRef} className="py-section bg-background texture-noise">
-            <div className="container mx-auto px-6 lg:px-12">
-              <motion.h3
-                initial="hidden"
-                animate={additionalInView ? "visible" : "hidden"}
-                variants={revealVariants.fadeUp}
-                transition={{ duration: 0.6 }}
-                className="text-subheadline font-light text-foreground mb-12"
-              >
-                {t("business.global.title") || "A Global Business Address"}
-              </motion.h3>
+        {/* Scroll-driven editorial sections — Mobile */}
+        <section className="lg:hidden py-16 bg-background">
+          <div className="container mx-auto px-6">
+            <div className="space-y-0">
+              {sections.map((section, index) => (
+                <div key={section.id} className="border-t border-border">
+                  <button
+                    onClick={() => setExpandedMobile(expandedMobile === index ? null : index)}
+                    className="w-full py-6 flex items-start justify-between text-left"
+                  >
+                    <div className="flex items-start gap-4">
+                      <span className="text-xs text-muted-foreground/50 mt-1">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <h3 className={`text-xl font-light transition-colors duration-300 ${
+                        expandedMobile === index ? "text-foreground" : "text-muted-foreground/50"
+                      }`}>
+                        {isAr ? section.titleAr : section.titleEn}
+                      </h3>
+                    </div>
+                    <span className="text-muted-foreground text-lg">
+                      {expandedMobile === index ? "−" : "+"}
+                    </span>
+                  </button>
+                  <AnimatePresence>
+                    {expandedMobile === index && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.4 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pb-8 space-y-4">
+                          <div className="aspect-[16/9] overflow-hidden">
+                            <img
+                              src={section.image}
+                              alt={section.titleEn}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            {isAr ? section.descAr : section.descEn}
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-              <div className="grid lg:grid-cols-2 gap-16 items-center">
+        {/* Gallery */}
+        <section className="py-24 bg-secondary">
+          <div className="container mx-auto px-6 lg:px-12">
+            <div className="grid lg:grid-cols-3 gap-6">
+              {galleryImages.map((img, i) => (
                 <motion.div
-                  initial="hidden"
-                  animate={additionalInView ? "visible" : "hidden"}
-                  variants={revealVariants.slideLeft}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                  className="space-y-6"
+                  key={i}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7, delay: i * 0.15 }}
+                  className="aspect-[3/4] overflow-hidden group"
                 >
-                  <p className="text-body-lg text-muted-foreground leading-relaxed">
-                    {t("business.global.p1") || "Al Hamra Tower hosts the headquarters of Kuwait's leading corporations and international enterprises. The address signals prestige, stability, and forward-thinking vision."}
-                  </p>
-                  <p className="text-body text-muted-foreground leading-relaxed">
-                    {t("business.global.p2") || "With direct access to major transportation networks and proximity to government institutions, the tower offers unmatched connectivity for businesses operating at the highest level."}
-                  </p>
-                  <p className="text-body text-muted-foreground leading-relaxed">
-                    {t("business.global.p3") || "From financial services to technology companies, energy giants to consulting firms—Al Hamra Tower serves as the command center for enterprises that shape the region's economy."}
-                  </p>
+                  <img
+                    src={img.src}
+                    alt={img.alt}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
                 </motion.div>
-
-                <motion.div
-                  initial="hidden"
-                  animate={additionalInView ? "visible" : "hidden"}
-                  variants={revealVariants.slideRight}
-                  transition={{ duration: 0.8, delay: 0.3 }}
-                  className="grid grid-cols-2 gap-4"
-                >
-                  <div className="aspect-[3/4] overflow-hidden group">
-                    <img src={towerAerialDay} alt="Tower aerial view" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                  </div>
-                  <div className="aspect-[3/4] overflow-hidden group mt-8">
-                    <img src={cityLandscape} alt="Kuwait city landscape" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                  </div>
-                </motion.div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
