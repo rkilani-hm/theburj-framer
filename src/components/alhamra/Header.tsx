@@ -79,7 +79,12 @@ const Header = () => {
       <div className="container mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo - Text only, Crestline-inspired */}
-          <Link to="/" className="flex items-center group">
+          <Link to="/" className="flex items-center gap-3 group">
+            <img 
+              src={alHamraLogo} 
+              alt="Al Hamra Tower" 
+              className="h-10 lg:h-12 w-auto object-contain"
+            />
             <span className="text-lg font-sans font-medium tracking-[0.15em] uppercase text-foreground">
               Al Hamra
             </span>
