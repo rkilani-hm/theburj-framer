@@ -1,305 +1,346 @@
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/alhamra/Header";
 import Footer from "@/components/alhamra/Footer";
-import { useScrollReveal, revealVariants } from "@/hooks/useScrollReveal";
-import { motion } from "framer-motion";
-import { Award, Trophy, Star, FileText } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+
 import towerNight from "@/assets/tower-night-illuminated.jpg";
 import towerTopClouds from "@/assets/tower-top-clouds.png";
 import skylineHero from "@/assets/skyline-hero.jpg";
+import somTowerSkyline from "@/assets/som-tower-skyline.jpg";
+import towerBw1 from "@/assets/tower-bw-1.png";
+import towerFogNight from "@/assets/tower-fog-night.png";
+import towerAerialSunset from "@/assets/tower-aerial-sunset.png";
+import towerCloudsAerial from "@/assets/tower-clouds-aerial.png";
+
+interface RecognitionSection {
+  id: string;
+  title: { en: string; ar: string };
+  description: { en: string; ar: string };
+  image: string;
+}
+
+const scrollSections: RecognitionSection[] = [
+  {
+    id: "ctbuh",
+    title: { en: "CTBUH BEST\nTALL BUILDING", ar: "أفضل مبنى شاهق\nCTBUH" },
+    description: {
+      en: "In 2012, the Council on Tall Buildings and Urban Habitat recognized Al Hamra Tower as the Best Tall Building in the Middle East & Africa — acknowledging its pioneering approach to sculpted high-rise design and climate-responsive architecture.",
+      ar: "في ٢٠١٢، اعترف مجلس المباني الشاهقة والموئل الحضري ببرج الحمراء كأفضل مبنى شاهق في الشرق الأوسط وأفريقيا — تقديراً لنهجه الرائد في تصميم ناطحات السحاب المنحوتة."
+    },
+    image: towerNight,
+  },
+  {
+    id: "iabse",
+    title: { en: "IABSE OUTSTANDING\nSTRUCTURE", ar: "الهيكل المتميز\nIABSE" },
+    description: {
+      en: "The International Association for Bridge and Structural Engineering honored the tower in 2014 with its Outstanding Structure Award — recognizing the unprecedented engineering solutions required for the hyperbolic paraboloid walls and torsional gravity response.",
+      ar: "كرّمت الرابطة الدولية لهندسة الجسور والهياكل البرج في ٢٠١٤ بجائزة الهيكل المتميز — تقديراً للحلول الهندسية غير المسبوقة."
+    },
+    image: towerTopClouds,
+  },
+  {
+    id: "asce",
+    title: { en: "ASCE EXCELLENCE\nIN ENGINEERING", ar: "تميز ASCE\nفي الهندسة" },
+    description: {
+      en: "The American Society of Civil Engineers recognized the tower's structural innovation in 2015 — particularly the development of four parallel 3D finite element analysis models and the creep compatibility analysis that resolved the tower's unique torsional behavior.",
+      ar: "اعترفت الجمعية الأمريكية للمهندسين المدنيين بالابتكار الهيكلي للبرج في ٢٠١٥ — خاصة تطوير أربعة نماذج تحليل عناصر محدودة ثلاثية الأبعاد متوازية."
+    },
+    image: somTowerSkyline,
+  },
+  {
+    id: "research",
+    title: { en: "CTBUH\nRESEARCH PAPER", ar: "ورقة بحثية\nCTBUH" },
+    description: {
+      en: "\"Sculpted High Rise: The Al Hamra Tower\" — presented at the Structural Engineers World Congress 2007 by Mark Sarkisian, Neville Mathias, and Aaron Mazeika of SOM. The paper demonstrated how parametric 3D modeling could resolve free-form design at super high-rise scale.",
+      ar: "\"ناطحة سحاب منحوتة: برج الحمراء\" — قُدمت في المؤتمر العالمي للمهندسين الإنشائيين ٢٠٠٧. أوضحت الورقة كيف يمكن للنمذجة البارامترية ثلاثية الأبعاد حل التصميم الحر."
+    },
+    image: towerCloudsAerial,
+  },
+  {
+    id: "sustainable",
+    title: { en: "SUSTAINABLE\nDESIGN", ar: "التصميم\nالمستدام" },
+    description: {
+      en: "The Middle East Architecture Awards recognized the tower's climate-responsive design in 2016 — the carved form acting as a passive solar shading device, reducing energy consumption while creating one of the most distinctive silhouettes in modern architecture.",
+      ar: "كرّمت جوائز العمارة في الشرق الأوسط تصميم البرج المستجيب للمناخ في ٢٠١٦ — الشكل المنحوت يعمل كجهاز تظليل شمسي سلبي يقلل استهلاك الطاقة."
+    },
+    image: skylineHero,
+  },
+  {
+    id: "decade",
+    title: { en: "DECADE OF\nEXCELLENCE", ar: "عقد من\nالتميز" },
+    description: {
+      en: "The 2019 Gulf Construction Awards honored a decade of operational excellence — the tower's ongoing performance as a fully managed environment demonstrating that architectural ambition and engineering rigor can sustain greatness over time.",
+      ar: "كرّمت جوائز البناء الخليجي ٢٠١٩ عقداً من التميز التشغيلي — أداء البرج المستمر كبيئة مُدارة بالكامل يثبت أن الطموح المعماري والصرامة الهندسية يمكن أن يحافظا على العظمة."
+    },
+    image: towerFogNight,
+  },
+];
 
 const Recognition = () => {
-  const heroReveal = useScrollReveal();
+  const { language } = useLanguage();
+  const isEn = language === "en";
+  const [activeIndex, setActiveIndex] = useState(0);
+  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const awards = [
-    {
-      year: "2007",
-      title: "Structural Engineers World Congress Paper",
-      organization: "CTBUH — Presented research on sculpted high-rise design",
-      icon: FileText,
-      highlight: true
-    },
-    {
-      year: "2012",
-      title: "Best Tall Building Middle East & Africa",
-      organization: "Council on Tall Buildings and Urban Habitat (CTBUH)",
-      icon: Trophy
-    },
-    {
-      year: "2014",
-      title: "Outstanding Structure Award",
-      organization: "International Association for Bridge and Structural Engineering",
-      icon: Award
-    },
-    {
-      year: "2015",
-      title: "Excellence in Engineering",
-      organization: "American Society of Civil Engineers",
-      icon: Star
-    },
-    {
-      year: "2016",
-      title: "Sustainable Design Recognition",
-      organization: "Middle East Architecture Awards",
-      icon: Award
-    },
-    {
-      year: "2019",
-      title: "Decade of Excellence",
-      organization: "Gulf Construction Awards",
-      icon: Trophy
-    },
-  ];
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const idx = sectionRefs.current.indexOf(entry.target as HTMLDivElement);
+            if (idx !== -1) setActiveIndex(idx);
+          }
+        });
+      },
+      { rootMargin: "-40% 0px -40% 0px", threshold: 0 }
+    );
+    sectionRefs.current.forEach((ref) => { if (ref) observer.observe(ref); });
+    return () => observer.disconnect();
+  }, []);
 
-  const keywords = ["Free Form Design", "Sculpted Tower", "Twisted Tower", "Hyperbolic Paraboloid"];
+  const { ref: heroRef, isInView: heroInView } = useScrollReveal();
+  const { ref: galleryRef, isInView: galleryInView } = useScrollReveal();
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Header />
       <main className="pt-24">
-        {/* Hero Section */}
-        <section className="relative h-[70vh] overflow-hidden">
-          <img 
-            src={towerNight} 
-            alt="Al Hamra Tower Recognition" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
-          <motion.div 
-            ref={heroReveal.ref}
-            initial="hidden"
-            animate={heroReveal.isInView ? "visible" : "hidden"}
-            variants={revealVariants.fadeUp}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute bottom-0 left-0 right-0 p-8 lg:p-16"
-          >
-            <h1 className="text-4xl lg:text-6xl font-light tracking-wide text-foreground mb-4">
-              Global Acknowledgement
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl">
-              Al Hamra Business Tower has been recognized by leading architectural and development institutions for its design excellence and long-term presence on the global skyline. Awards include the Council on Tall Buildings and Urban Habitat's Best Tall Building – 10 Year Award and multiple international architectural accolades affirming its engineering and aesthetic legacy.
-            </p>
-          </motion.div>
+        {/* Hero */}
+        <section className="pt-8 lg:pt-16 pb-16 lg:pb-24 bg-background">
+          <div className="container mx-auto px-6 lg:px-12">
+            <motion.div
+              ref={heroRef}
+              initial={{ opacity: 0, y: 40 }}
+              animate={heroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-8 block">
+                {isEn ? "RECOGNITION" : "التقدير"}
+              </span>
+              <h1 className="text-[clamp(2.5rem,5vw,5rem)] font-sans font-medium uppercase leading-[1.05] tracking-[-0.02em] text-foreground max-w-5xl">
+                {isEn
+                  ? "Global Acknowledgement. Engineering And Design Excellence."
+                  : "اعتراف عالمي. تميز في الهندسة والتصميم."}
+              </h1>
+            </motion.div>
+          </div>
         </section>
 
-        {/* CTBUH Research Paper — Single Card Layout (#23) */}
-        <section className="py-24 px-6 lg:px-12 bg-primary/5">
-          <div className="container mx-auto max-w-4xl">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={revealVariants.fadeUp}
-              transition={{ duration: 0.8 }}
-              className="text-center mb-12"
-            >
-              <p className="text-sm uppercase tracking-widest text-primary mb-4">Published Research</p>
-            </motion.div>
-            
-            {/* Single Research Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="p-8 lg:p-12 border border-border bg-background"
-            >
-              <h2 className="text-2xl lg:text-3xl font-semibold tracking-wide mb-3">
-                "Sculpted High Rise: The Al Hamra Tower"
-              </h2>
-              <p className="text-muted-foreground mb-6">
-                CTBUH Research Paper — Structural Engineers World Congress 2007
-              </p>
-              
-              {/* Metadata */}
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 text-sm text-muted-foreground mb-8">
-                <p><span className="font-medium text-foreground">Authors:</span> Mark Sarkisian, Neville Mathias, Aaron Mazeika (SOM)</p>
-                <span className="hidden sm:inline text-border">|</span>
-                <p><span className="font-medium text-foreground">Publisher:</span> Council on Tall Buildings and Urban Habitat</p>
-              </div>
-              
-              {/* Keywords */}
-              <div className="flex flex-wrap gap-3">
-                {keywords.map((keyword) => (
-                  <span 
-                    key={keyword}
-                    className="px-4 py-2 text-sm border border-border bg-muted/30 text-foreground"
-                  >
-                    {keyword}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Pull Quote */}
+        {/* Hero image */}
+        <section className="pb-8">
+          <div className="container mx-auto px-6 lg:px-12">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="mt-12 p-8 lg:p-12 bg-muted/30"
+              transition={{ duration: 0.8 }}
+              className="aspect-[21/9] overflow-hidden"
             >
-              <blockquote className="text-xl lg:text-2xl font-light leading-relaxed mb-6 italic">
-                "The design and construction of the Al Hamra Tower is a significant step forward 
-                both in terms of architectural design form and process. By blending conventional 
-                engineering tools with parametric modeling software, SOM has brought together the 
-                realms of free-form design and the super high-rise skyscraper."
-              </blockquote>
-              <cite className="text-muted-foreground not-italic">
-                — CTBUH Research Paper, Structural Engineers World Congress 2007
-              </cite>
+              <img src={towerNight} alt="Al Hamra Tower at night" className="w-full h-full object-cover" />
             </motion.div>
           </div>
         </section>
 
-        {/* Awards Timeline */}
-        <section className="py-24 px-6 lg:px-12">
-          <div className="container mx-auto max-w-4xl">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
+        {/* Intro */}
+        <section className="py-16 lg:py-24 bg-background">
+          <div className="container mx-auto px-6 lg:px-12">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              variants={revealVariants.fadeUp}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.6 }}
+              className="text-lg lg:text-xl text-foreground leading-relaxed max-w-3xl"
             >
-              <h2 className="text-3xl font-light tracking-wide text-center mb-16">
-                Awards & Honors
-              </h2>
-              <div className="space-y-8">
-                {awards.map((award, index) => (
-                  <motion.div
-                    key={award.title}
-                    initial={{ opacity: 0, x: -30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className={`flex gap-6 items-start p-6 border bg-background hover:bg-muted/30 transition-colors ${
-                      award.highlight ? 'border-primary' : 'border-border'
-                    }`}
+              {isEn
+                ? "Al Hamra Business Tower has been recognized by the world's leading architectural, structural, and sustainability institutions — affirming its engineering legacy and long-term presence on the global skyline."
+                : "حظي برج الحمراء باعتراف من أبرز المؤسسات المعمارية والهيكلية والاستدامة في العالم — مؤكداً إرثه الهندسي وحضوره الدائم على الأفق العالمي."}
+            </motion.p>
+          </div>
+        </section>
+
+        {/* Scroll-driven sections */}
+        <section className="bg-background border-t border-border">
+          <div className="container mx-auto px-6 lg:px-12">
+            <div className="py-16 lg:py-20">
+              <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-6 block">
+                {isEn ? "AWARDS & HONORS" : "الجوائز والتكريمات"}
+              </span>
+              <p className="text-base text-muted-foreground max-w-2xl leading-relaxed">
+                {isEn
+                  ? "Six milestones of global recognition — from the CTBUH Best Tall Building award to a decade of operational excellence."
+                  : "ست محطات من الاعتراف العالمي — من جائزة أفضل مبنى شاهق من CTBUH إلى عقد من التميز التشغيلي."}
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
+              <div className="space-y-0">
+                {scrollSections.map((section, index) => (
+                  <div
+                    key={section.id}
+                    ref={(el) => { sectionRefs.current[index] = el; }}
+                    className="py-12 lg:py-20 border-t border-border first:border-t-0 cursor-pointer"
+                    onClick={() => {
+                      setActiveIndex(index);
+                      sectionRefs.current[index]?.scrollIntoView({ behavior: "smooth", block: "center" });
+                    }}
                   >
-                    <div className={`flex-shrink-0 w-16 h-16 flex items-center justify-center ${
-                      award.highlight ? 'bg-primary/10' : 'bg-muted'
-                    }`}>
-                      <award.icon className={`w-6 h-6 ${award.highlight ? 'text-primary' : 'text-foreground'}`} />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-4 mb-2">
-                        <span className="text-sm text-muted-foreground">{award.year}</span>
-                        {award.highlight && (
-                          <span className="text-xs text-primary bg-primary/10 px-2 py-1">Foundational</span>
-                        )}
-                      </div>
-                      <h3 className="text-lg font-light mb-1">{award.title}</h3>
-                      <p className="text-sm text-muted-foreground">{award.organization}</p>
-                    </div>
-                  </motion.div>
+                    <h3
+                      className={`text-[clamp(1.8rem,3.5vw,3.5rem)] font-sans font-medium uppercase leading-[1.1] tracking-[-0.01em] whitespace-pre-line transition-colors duration-500 ${
+                        activeIndex === index ? "text-foreground" : "text-muted-foreground/30"
+                      }`}
+                    >
+                      {section.title[language]}
+                    </h3>
+                    <AnimatePresence>
+                      {activeIndex === index && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.4 }}
+                          className="lg:hidden overflow-hidden"
+                        >
+                          <p className="text-sm text-muted-foreground leading-relaxed mt-6 max-w-md">
+                            {section.description[language]}
+                          </p>
+                          <div className="aspect-[16/10] overflow-hidden mt-6">
+                            <img src={section.image} alt={section.title.en} className="w-full h-full object-cover" />
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 ))}
               </div>
-            </motion.div>
-          </div>
-        </section>
 
-        {/* Global Standing */}
-        <section className="py-24 px-6 lg:px-12">
-          <div className="container mx-auto max-w-6xl">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.98 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-              >
-                <img 
-                  src={towerTopClouds} 
-                  alt="Tower Among Clouds" 
-                  className="w-full h-auto"
-                />
-              </motion.div>
-              <div className="space-y-8">
-                <h2 className="text-3xl font-light tracking-wide">
-                  Global Standing
-                </h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  Al Hamra Tower stands among the world's most distinguished skyscrapers, 
-                  recognized not only for its height but for its innovative approach to 
-                  sustainable design in extreme climates.
-                </p>
-                <p className="text-muted-foreground leading-relaxed">
-                  The tower's unique form—a spiraling geometry developed by subtracting a 
-                  quadrant of a typical floor plan—represents a paradigm shift in how 
-                  super high-rise buildings can be conceived and constructed.
-                </p>
-                <div className="grid grid-cols-2 gap-8 pt-4">
-                  <div>
-                    <p className="text-4xl font-light">23rd</p>
-                    <p className="text-sm text-muted-foreground">Tallest in the World (at completion)</p>
-                  </div>
-                  <div>
-                    <p className="text-4xl font-light">#1</p>
-                    <p className="text-sm text-muted-foreground">Tallest Sculpted Tower</p>
-                  </div>
+              <div className="hidden lg:block">
+                <div className="sticky top-32">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={activeIndex}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      <p className="text-sm text-muted-foreground leading-relaxed mb-8 max-w-md">
+                        {scrollSections[activeIndex].description[language]}
+                      </p>
+                      <div className="aspect-[4/3] overflow-hidden">
+                        <img
+                          src={scrollSections[activeIndex].image}
+                          alt={scrollSections[activeIndex].title.en}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Engineering Contribution */}
-        <section className="py-24 px-6 lg:px-12 bg-charcoal-900">
-          <div className="container mx-auto max-w-6xl">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-              <div className="space-y-8">
-                <h2 className="text-3xl font-light tracking-wide text-white">
-                  Engineering Contribution
-                </h2>
-                <p className="text-grey-400 leading-relaxed">
-                  Beyond architectural accolades, Al Hamra Tower advanced the field of structural 
-                  engineering. The development of four parallel 3D finite element analysis models, 
-                  innovative creep compatibility analysis, and non-linear buckling studies for the 
-                  lobby lamella structure have informed subsequent super high-rise projects worldwide.
-                </p>
-                <div className="grid grid-cols-2 gap-8 pt-4">
-                  <div>
-                    <p className="text-3xl font-light text-white">4</p>
-                    <p className="text-sm text-grey-500">Parallel Analysis Models</p>
-                  </div>
-                  <div>
-                    <p className="text-3xl font-light text-white">189,000<span className="text-lg">kN</span></p>
-                    <p className="text-sm text-grey-500">Lamella Buckling Capacity</p>
-                  </div>
-                </div>
-              </div>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.98 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-              >
-                <img 
-                  src={skylineHero} 
-                  alt="Kuwait City Skyline" 
-                  className="w-full h-auto"
-                />
-                <p className="text-xs text-grey-500 mt-3">Al Hamra Tower defining the Kuwait City skyline</p>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* Project Collaborators */}
-        <section className="py-24 px-6 lg:px-12">
-          <div className="container mx-auto max-w-4xl text-center">
-            <h2 className="text-2xl font-light tracking-wide mb-12">Project Collaborators</h2>
-            <div className="grid md:grid-cols-4 gap-8">
+        {/* Stats bar */}
+        <section className="bg-foreground">
+          <div className="container mx-auto px-6 lg:px-12 py-16 lg:py-20">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16">
               {[
-                { name: "SOM", role: "Lead Architect & Engineer" },
-                { name: "VDA", role: "Associate Architect" },
-                { name: "Gehry Technologies", role: "Digital Project Software" },
-                { name: "Ahmadiah Contracting & Trading Co. KCSC", role: "General Contractor" },
-              ].map((collaborator) => (
-                <div key={collaborator.name} className="text-center">
-                  <p className="font-light">{collaborator.name}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{collaborator.role}</p>
-                </div>
+                { value: "23rd", label: isEn ? "Tallest at Completion" : "الأطول عند الإنجاز" },
+                { value: "#1", label: isEn ? "Tallest Sculpted Tower" : "أطول برج منحوت" },
+                { value: "6+", label: isEn ? "International Awards" : "جوائز دولية" },
+                { value: "4", label: isEn ? "Analysis Models" : "نماذج تحليل" },
+              ].map((stat, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                >
+                  <p className="text-3xl lg:text-4xl font-sans font-light text-background mb-1">{stat.value}</p>
+                  <p className="text-sm text-background/50 tracking-wide">{stat.label}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Pull quote */}
+        <section className="py-24 lg:py-32 bg-background border-t border-border">
+          <div className="container mx-auto px-6 lg:px-12 max-w-4xl">
+            <motion.blockquote
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="text-xl lg:text-2xl font-light leading-relaxed text-foreground italic mb-8"
+            >
+              {isEn
+                ? "\"The design and construction of the Al Hamra Tower is a significant step forward both in terms of architectural design form and process. By blending conventional engineering tools with parametric modeling software, SOM has brought together the realms of free-form design and the super high-rise skyscraper.\""
+                : "\"يمثل تصميم وبناء برج الحمراء خطوة كبيرة إلى الأمام من حيث شكل التصميم المعماري والعملية. من خلال مزج أدوات الهندسة التقليدية مع برامج النمذجة البارامترية، جمعت SOM بين عوالم التصميم الحر وناطحة السحاب فائقة الارتفاع.\""}
+            </motion.blockquote>
+            <p className="text-sm text-muted-foreground">
+              — CTBUH Research Paper, Structural Engineers World Congress 2007
+            </p>
+          </div>
+        </section>
+
+        {/* Gallery */}
+        <section className="py-4 bg-background">
+          <div ref={galleryRef} className="container mx-auto px-6 lg:px-12">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                { img: towerBw1, span: "" },
+                { img: skylineHero, span: "" },
+                { img: towerTopClouds, span: "" },
+                { img: towerAerialSunset, span: "lg:col-span-2" },
+                { img: towerCloudsAerial, span: "" },
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={galleryInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  transition={{ duration: 0.6, delay: i * 0.08 }}
+                  className={`overflow-hidden aspect-[4/3] ${item.span}`}
+                >
+                  <img
+                    src={item.img}
+                    alt="Al Hamra Tower"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Collaborators */}
+        <section className="py-24 lg:py-32 bg-background border-t border-border">
+          <div className="container mx-auto px-6 lg:px-12">
+            <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-16 block">
+              {isEn ? "PROJECT COLLABORATORS" : "المتعاونون في المشروع"}
+            </span>
+            <div className="divide-y divide-border">
+              {[
+                { name: "Skidmore, Owings & Merrill (SOM)", role: isEn ? "Lead Architect & Structural Engineer" : "المهندس المعماري الرئيسي" },
+                { name: "VDA", role: isEn ? "Associate Architect" : "المهندس المعماري المشارك" },
+                { name: "Gehry Technologies", role: isEn ? "Digital Project Software" : "برنامج المشروع الرقمي" },
+                { name: "Ahmadiah Contracting & Trading Co. KCSC", role: isEn ? "General Contractor" : "المقاول العام" },
+              ].map((collab, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.05 }}
+                  className="py-6 flex flex-col md:flex-row md:items-center md:justify-between gap-2"
+                >
+                  <span className="text-foreground">{collab.name}</span>
+                  <span className="text-sm text-muted-foreground">{collab.role}</span>
+                </motion.div>
               ))}
             </div>
           </div>
