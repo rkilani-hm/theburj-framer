@@ -1,192 +1,298 @@
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/alhamra/Header";
 import Footer from "@/components/alhamra/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Eye, Key, Star, Sparkles, Building2, Ruler, Users, Calendar } from "lucide-react";
-import { motion } from "framer-motion";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+
 import towerAerial from "@/assets/tower-aerial.png";
 import skylineParkPanorama from "@/assets/skyline-park-panorama.jpg";
 import cityViewInterior from "@/assets/city-view-interior.jpg";
 import interiorLobby from "@/assets/interior-lobby.jpg";
 import towerAerialBalcony from "@/assets/tower-aerial-balcony.jpg";
+import officeCorridor from "@/assets/office-corridor.jpg";
+import towerTopClouds from "@/assets/tower-top-clouds.png";
+
+interface OpportunitySection {
+  id: string;
+  title: { en: string; ar: string };
+  description: { en: string; ar: string };
+  image: string;
+}
+
+const scrollSections: OpportunitySection[] = [
+  {
+    id: "executive",
+    title: { en: "EXECUTIVE\nSUITE", ar: "الجناح\nالتنفيذي" },
+    description: {
+      en: "250–500 sqm corner positions with panoramic Gulf views, private reception areas, and direct elevator access. Ideal for C-suite teams, family offices, and boutique financial firms seeking prestige and privacy.",
+      ar: "مواقع ركنية من ٢٥٠ إلى ٥٠٠ متر مربع مع إطلالات بانورامية على الخليج ومناطق استقبال خاصة ووصول مباشر للمصاعد."
+    },
+    image: cityViewInterior,
+  },
+  {
+    id: "full-floor",
+    title: { en: "FULL FLOOR\nOCCUPANCY", ar: "إشغال\nالطابق الكامل" },
+    description: {
+      en: "1,200–1,800 sqm column-free floor plates offering complete operational autonomy. Dedicated elevator lobbies and bespoke reception design create a seamless branded experience from arrival to workspace.",
+      ar: "طوابق خالية من الأعمدة من ١,٢٠٠ إلى ١,٨٠٠ متر مربع توفر استقلالية تشغيلية كاملة. ردهات مصاعد مخصصة وتصميم استقبال حسب الطلب."
+    },
+    image: officeCorridor,
+  },
+  {
+    id: "campus",
+    title: { en: "CORPORATE\nCAMPUS", ar: "الحرم\nالمؤسسي" },
+    description: {
+      en: "3,000+ sqm across multiple contiguous floors. Branded entrances, dedicated engineering support, and the infrastructure to create a vertical campus within Kuwait's tallest building.",
+      ar: "أكثر من ٣,٠٠٠ متر مربع عبر طوابق متعددة متجاورة. مداخل تحمل العلامة التجارية ودعم هندسي مخصص والبنية التحتية لإنشاء حرم عمودي."
+    },
+    image: interiorLobby,
+  },
+  {
+    id: "views",
+    title: { en: "PANORAMIC\nWORKSPACES", ar: "مساحات عمل\nبانورامية" },
+    description: {
+      en: "Floor-to-ceiling glazing on three sides floods every workspace with natural light. 3.2-meter ceiling heights and column-free layouts provide the spatial freedom to design environments that inspire.",
+      ar: "زجاج من الأرض للسقف على ثلاثة جوانب يغمر كل مساحة عمل بالضوء الطبيعي. ارتفاعات سقف ٣.٢ متر وتخطيطات خالية من الأعمدة توفر حرية مكانية."
+    },
+    image: skylineParkPanorama,
+  },
+  {
+    id: "finishes",
+    title: { en: "PREMIUM\nFINISHES", ar: "تشطيبات\nمتميزة" },
+    description: {
+      en: "High-end materials and finishes throughout common areas and tenant spaces. From the Jura limestone lobby to the serviced corridors, every touchpoint reflects the tower's commitment to quality.",
+      ar: "مواد وتشطيبات عالية الجودة في جميع المناطق المشتركة ومساحات المستأجرين. من ردهة الحجر الجيري الجوراسي إلى الممرات المخدومة، كل نقطة تماس تعكس الجودة."
+    },
+    image: towerAerialBalcony,
+  },
+  {
+    id: "infrastructure",
+    title: { en: "ENTERPRISE\nINFRASTRUCTURE", ar: "البنية التحتية\nللمؤسسات" },
+    description: {
+      en: "Fiber-optic connectivity, integrated BMS, multi-carrier access, and 24/7 engineering support. The building operates as a fully managed environment — every system calibrated for enterprise demands.",
+      ar: "اتصال بالألياف الضوئية ونظام إدارة مبانٍ متكامل ووصول متعدد للمزودين ودعم هندسي على مدار الساعة. المبنى يعمل كبيئة مُدارة بالكامل."
+    },
+    image: towerTopClouds,
+  },
+];
 
 const LeasingOpportunities = () => {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
+  const isEn = language === "en";
+  const [activeIndex, setActiveIndex] = useState(0);
+  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const floorPlans = [
-    {
-      type: t("leasing.type.executive"),
-      size: "250 - 500",
-      unit: t("leasing.sqm"),
-      features: [t("leasing.feature.corner"), t("leasing.feature.view"), t("leasing.feature.private")],
-    },
-    {
-      type: t("leasing.type.full"),
-      size: "1,200 - 1,800",
-      unit: t("leasing.sqm"),
-      features: [t("leasing.feature.floor"), t("leasing.feature.elevator"), t("leasing.feature.reception")],
-    },
-    {
-      type: t("leasing.type.corporate"),
-      size: "3,000+",
-      unit: t("leasing.sqm"),
-      features: [t("leasing.feature.multi"), t("leasing.feature.branding"), t("leasing.feature.dedicated")],
-    },
-  ];
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const idx = sectionRefs.current.indexOf(entry.target as HTMLDivElement);
+            if (idx !== -1) setActiveIndex(idx);
+          }
+        });
+      },
+      { rootMargin: "-40% 0px -40% 0px", threshold: 0 }
+    );
+    sectionRefs.current.forEach((ref) => { if (ref) observer.observe(ref); });
+    return () => observer.disconnect();
+  }, []);
 
-  const highlights = [
-    { icon: Eye, title: t("leasing.highlight1.title") || "Panoramic Views", desc: t("leasing.highlight1.desc") || "360-degree views of Kuwait City and the Arabian Gulf from upper floors" },
-    { icon: Key, title: t("leasing.highlight2.title") || "Flexible Layouts", desc: t("leasing.highlight2.desc") || "Customizable floor plans to match your operational requirements" },
-    { icon: Star, title: t("leasing.highlight3.title") || "Premium Finishes", desc: t("leasing.highlight3.desc") || "High-end materials and finishes throughout common areas" },
-    { icon: Sparkles, title: t("leasing.highlight4.title") || "Smart Building", desc: t("leasing.highlight4.desc") || "Integrated building management systems for efficiency" },
-  ];
-
-  const amenities = [
-    { icon: Building2, label: t("leasing.amenity.lobby") },
-    { icon: Ruler, label: t("leasing.amenity.ceiling") },
-    { icon: Users, label: t("leasing.amenity.conference") },
-    { icon: Calendar, label: t("leasing.amenity.flexible") },
-  ];
+  const { ref: heroRef, isInView: heroInView } = useScrollReveal();
+  const { ref: galleryRef, isInView: galleryInView } = useScrollReveal();
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Header />
       <main className="pt-24">
-        {/* Hero Section */}
-        <section className="py-24 lg:py-32 bg-secondary relative overflow-hidden">
-          <div className="absolute inset-0">
-            <img src={towerAerial} alt="Al Hamra Tower aerial view" className="w-full h-full object-cover opacity-20" />
-            <div className="absolute inset-0 bg-gradient-to-r from-secondary via-secondary/90 to-secondary/70" />
-          </div>
-          <div className="container mx-auto px-6 lg:px-12 relative z-10">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-px bg-border" />
-                </div>
-                <span className="text-sm tracking-[0.3em] uppercase text-muted-foreground mb-6 block">{t("leasing.subtitle")}</span>
-                <h1 className="text-4xl lg:text-6xl font-light tracking-tight mb-8">{t("leasing.title")}</h1>
-                <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed mb-8">{t("leasing.intro")}</p>
-                <p className="text-body text-muted-foreground leading-relaxed">
-                  {t("leasing.intro2") || "Whether you're seeking an executive suite for a growing team or full-floor headquarters for an established enterprise, Al Hamra Tower offers configurations to match your ambition."}
-                </p>
-              </motion.div>
-              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.2 }} className="hidden lg:block">
-                <div className="aspect-[4/3] overflow-hidden">
-                  <img src={skylineParkPanorama} alt="Kuwait City panorama" className="w-full h-full object-cover" />
-                </div>
-              </motion.div>
-            </div>
+        {/* Hero */}
+        <section className="pt-8 lg:pt-16 pb-16 lg:pb-24 bg-background">
+          <div className="container mx-auto px-6 lg:px-12">
+            <motion.div
+              ref={heroRef}
+              initial={{ opacity: 0, y: 40 }}
+              animate={heroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-8 block">
+                {isEn ? "OPPORTUNITIES" : "الفرص"}
+              </span>
+              <h1 className="text-[clamp(2.5rem,5vw,5rem)] font-sans font-medium uppercase leading-[1.05] tracking-[-0.02em] text-foreground max-w-5xl">
+                {isEn
+                  ? "Flexible Configurations For Every Scale Of Enterprise."
+                  : "تكوينات مرنة لكل حجم من المؤسسات."}
+              </h1>
+            </motion.div>
           </div>
         </section>
 
-        {/* Highlights */}
-        <section className="py-20 bg-background texture-noise">
+        {/* Hero image */}
+        <section className="pb-8">
           <div className="container mx-auto px-6 lg:px-12">
-            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="text-2xl lg:text-3xl font-light tracking-tight mb-12">
-              {t("leasing.highlights.title") || "Why Al Hamra Tower"}
-            </motion.h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {highlights.map((highlight, index) => (
-                <motion.div key={index} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: index * 0.1 }} className="group">
-                  <div className="w-14 h-14 border border-border flex items-center justify-center mb-4 transition-all duration-300 group-hover:bg-foreground group-hover:border-foreground">
-                    <highlight.icon size={24} className="text-muted-foreground transition-colors duration-300 group-hover:text-background" />
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="aspect-[21/9] overflow-hidden"
+            >
+              <img src={towerAerial} alt="Al Hamra Tower" className="w-full h-full object-cover" />
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Intro */}
+        <section className="py-16 lg:py-24 bg-background">
+          <div className="container mx-auto px-6 lg:px-12">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-lg lg:text-xl text-foreground leading-relaxed max-w-3xl"
+            >
+              {isEn
+                ? "From executive suites to multi-floor corporate campuses, Al Hamra Tower offers column-free floor plates, premium finishes, and enterprise-grade infrastructure — all within Kuwait's most recognized business address."
+                : "من الأجنحة التنفيذية إلى الحرم المؤسسي متعدد الطوابق، يقدم برج الحمراء طوابق خالية من الأعمدة وتشطيبات متميزة وبنية تحتية بمستوى المؤسسات."}
+            </motion.p>
+          </div>
+        </section>
+
+        {/* Scroll-driven sections */}
+        <section className="bg-background border-t border-border">
+          <div className="container mx-auto px-6 lg:px-12">
+            <div className="py-16 lg:py-20">
+              <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-6 block">
+                {isEn ? "SPACE TYPES" : "أنواع المساحات"}
+              </span>
+              <p className="text-base text-muted-foreground max-w-2xl leading-relaxed">
+                {isEn
+                  ? "Six categories of workspace — each designed to accommodate a different scale and style of enterprise operation."
+                  : "ست فئات من مساحات العمل — كل منها مصمم لاستيعاب حجم ونمط مختلف من العمليات المؤسسية."}
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
+              <div className="space-y-0">
+                {scrollSections.map((section, index) => (
+                  <div
+                    key={section.id}
+                    ref={(el) => { sectionRefs.current[index] = el; }}
+                    className="py-12 lg:py-20 border-t border-border first:border-t-0 cursor-pointer"
+                    onClick={() => {
+                      setActiveIndex(index);
+                      sectionRefs.current[index]?.scrollIntoView({ behavior: "smooth", block: "center" });
+                    }}
+                  >
+                    <h3
+                      className={`text-[clamp(1.8rem,3.5vw,3.5rem)] font-sans font-medium uppercase leading-[1.1] tracking-[-0.01em] whitespace-pre-line transition-colors duration-500 ${
+                        activeIndex === index ? "text-foreground" : "text-muted-foreground/30"
+                      }`}
+                    >
+                      {section.title[language]}
+                    </h3>
+                    <AnimatePresence>
+                      {activeIndex === index && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.4 }}
+                          className="lg:hidden overflow-hidden"
+                        >
+                          <p className="text-sm text-muted-foreground leading-relaxed mt-6 max-w-md">
+                            {section.description[language]}
+                          </p>
+                          <div className="aspect-[16/10] overflow-hidden mt-6">
+                            <img src={section.image} alt={section.title.en} className="w-full h-full object-cover" />
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
-                  <h3 className="text-lg font-medium mb-2">{highlight.title}</h3>
-                  <p className="text-sm text-muted-foreground">{highlight.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Space Configurations */}
-        <section className="py-24 lg:py-32 bg-secondary">
-          <div className="container mx-auto px-6 lg:px-12">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-20 max-w-3xl">
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-16 h-px bg-border" />
-                <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground">{t("leasing.configurations") || "Configurations"}</span>
+                ))}
               </div>
-              <h2 className="text-3xl lg:text-4xl font-light tracking-tight mb-6">{t("leasing.plans.title")}</h2>
-              <p className="text-body-lg text-muted-foreground leading-relaxed">{t("leasing.plans.desc") || "Flexible configurations designed to accommodate businesses of every scale, from boutique operations to multinational headquarters."}</p>
-            </motion.div>
-            
-            <div className="space-y-0">
-              {floorPlans.map((plan, index) => (
-                <motion.div key={plan.type} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: index * 0.1 }} className="group border-t border-border py-12 first:border-t-0">
-                  <div className="grid lg:grid-cols-12 gap-8 items-start">
-                    <div className="lg:col-span-1"><span className="text-xs text-muted-foreground tracking-wider">0{index + 1}</span></div>
-                    <div className="lg:col-span-4">
-                      <h3 className="text-2xl lg:text-3xl font-light tracking-tight mb-3 group-hover:text-foreground/80 transition-colors duration-300">{plan.type}</h3>
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-lg text-muted-foreground">{plan.size}</span>
-                        <span className="text-sm text-muted-foreground/70">{plan.unit}</span>
-                      </div>
-                    </div>
-                    <div className="lg:col-span-5">
-                      <div className="flex flex-wrap gap-x-6 gap-y-2">
-                        {plan.features.map((feature, i) => (
-                          <span key={i} className="text-sm text-muted-foreground relative before:content-[''] before:absolute before:-left-3 before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-1 before:bg-muted-foreground/50 before:rounded-full first:before:hidden">{feature}</span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
 
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.4 }} className="mt-16 pt-12 border-t border-border">
-              <p className="text-sm text-muted-foreground max-w-2xl">{t("leasing.inquiry.note") || "All configurations are subject to availability and can be customized to meet specific operational requirements. Contact our leasing team for detailed floor plans and specifications."}</p>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Interior Showcase */}
-        <section className="py-24 lg:py-32 bg-background">
-          <div className="container mx-auto px-6 lg:px-12">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-              <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="space-y-6">
-                <h2 className="text-3xl lg:text-4xl font-light tracking-tight">{t("leasing.interior.title") || "Designed for Excellence"}</h2>
-                <p className="text-body-lg text-muted-foreground leading-relaxed">{t("leasing.interior.p1") || "Every office space in Al Hamra Tower is designed with the modern enterprise in mind. Floor-to-ceiling windows flood interiors with natural light while offering unobstructed views of the city and Gulf."}</p>
-                <p className="text-body text-muted-foreground leading-relaxed">{t("leasing.interior.p2") || "3.2-meter ceiling heights create an atmosphere of openness and possibility, while premium finishes and materials reflect the tower's commitment to quality at every level."}</p>
-                <div className="grid grid-cols-2 gap-8 pt-6">
-                  <div>
-                    <p className="text-3xl font-light text-foreground">3.2m</p>
-                    <p className="text-sm text-muted-foreground mt-1">{t("leasing.ceiling") || "Ceiling Height"}</p>
-                  </div>
-                  <div>
-                    <p className="text-3xl font-light text-foreground">360°</p>
-                    <p className="text-sm text-muted-foreground mt-1">{t("leasing.views") || "Panoramic Views"}</p>
-                  </div>
+              <div className="hidden lg:block">
+                <div className="sticky top-32">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={activeIndex}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      <p className="text-sm text-muted-foreground leading-relaxed mb-8 max-w-md">
+                        {scrollSections[activeIndex].description[language]}
+                      </p>
+                      <div className="aspect-[4/3] overflow-hidden">
+                        <img
+                          src={scrollSections[activeIndex].image}
+                          alt={scrollSections[activeIndex].title.en}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
-              </motion.div>
-              <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.2 }} className="grid grid-cols-2 gap-4">
-                <div className="aspect-[3/4] overflow-hidden group">
-                  <img src={cityViewInterior} alt="Premium office with city views" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                </div>
-                <div className="aspect-[3/4] overflow-hidden group mt-8">
-                  <img src={interiorLobby} alt="Executive lobby" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                </div>
-              </motion.div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Amenities */}
-        <section className="py-24 lg:py-32 bg-foreground text-background">
-          <div className="container mx-auto px-6 lg:px-12">
-            <h2 className="text-3xl lg:text-4xl font-light tracking-tight mb-16">{t("leasing.amenities.title")}</h2>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-              {amenities.map((amenity, index) => (
-                <motion.div key={amenity.label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: index * 0.1 }} className="flex flex-col items-center text-center">
-                  <amenity.icon className="w-10 h-10 mb-4 opacity-80" />
-                  <span className="text-sm tracking-wide">{amenity.label}</span>
+        {/* Stats bar */}
+        <section className="bg-foreground">
+          <div className="container mx-auto px-6 lg:px-12 py-16 lg:py-20">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16">
+              {[
+                { value: "3.2m", label: isEn ? "Ceiling Height" : "ارتفاع السقف" },
+                { value: "1,800m²", label: isEn ? "Max Floor Plate" : "أقصى مساحة طابق" },
+                { value: "95%", label: isEn ? "Occupancy Rate" : "نسبة الإشغال" },
+                { value: "50+", label: isEn ? "Tenant Companies" : "شركة مستأجرة" },
+              ].map((stat, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                >
+                  <p className="text-3xl lg:text-4xl font-sans font-light text-background mb-1">{stat.value}</p>
+                  <p className="text-sm text-background/50 tracking-wide">{stat.label}</p>
                 </motion.div>
               ))}
             </div>
-            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="aspect-[21/9] overflow-hidden">
-              <img src={towerAerialBalcony} alt="Al Hamra Tower aerial view" className="w-full h-full object-cover opacity-80" />
-            </motion.div>
+          </div>
+        </section>
+
+        {/* Gallery */}
+        <section className="py-4 bg-background">
+          <div ref={galleryRef} className="container mx-auto px-6 lg:px-12">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                { img: officeCorridor, span: "" },
+                { img: cityViewInterior, span: "" },
+                { img: interiorLobby, span: "" },
+                { img: skylineParkPanorama, span: "lg:col-span-2" },
+                { img: towerTopClouds, span: "" },
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={galleryInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  transition={{ duration: 0.6, delay: i * 0.08 }}
+                  className={`overflow-hidden aspect-[4/3] ${item.span}`}
+                >
+                  <img
+                    src={item.img}
+                    alt="Al Hamra workspace"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  />
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
       </main>
