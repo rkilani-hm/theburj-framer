@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ArrowUp } from "lucide-react";
+import alHamraLogo from "@/assets/al-hamra-logo.png";
 
 const Footer = () => {
   const { language, t } = useLanguage();
