@@ -1,5 +1,5 @@
 import { useLanguage } from "@/contexts/LanguageContext";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import Header from "@/components/alhamra/Header";
 import Footer from "@/components/alhamra/Footer";
@@ -83,26 +83,77 @@ const galleryImages = [
   { src: towerAerialDay, alt: "Tower aerial perspective" },
 ];
 
+/* Per-section sticky scroll card */
+const StickySection = ({
+  section,
+  index,
+  isAr,
+}: {
+  section: Section;
+  index: number;
+  isAr: boolean;
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  // Fade in as section enters, fade out as it leaves
+  const opacity = useTransform(scrollYProgress, [0, 0.25, 0.65, 0.9], [0, 1, 1, 0]);
+  const imgY = useTransform(scrollYProgress, [0, 0.25, 0.65, 0.9], [80, 0, 0, -40]);
+  const textY = useTransform(scrollYProgress, [0, 0.3, 0.65, 0.9], [50, 0, 0, -30]);
+  const imgScale = useTransform(scrollYProgress, [0, 0.3, 0.7, 0.9], [1.1, 1, 1, 0.98]);
+
+  return (
+    <div ref={ref} className="h-[120vh] relative">
+      <div className="sticky top-0 h-screen flex items-center">
+        <motion.div
+          style={{ opacity }}
+          className="container mx-auto px-6 lg:px-12"
+        >
+          <div className="grid grid-cols-12 gap-8 lg:gap-16 items-center">
+            {/* Text side */}
+            <motion.div
+              style={{ y: textY }}
+              className="col-span-12 lg:col-span-5 order-2 lg:order-1"
+            >
+              <span className="text-xs text-muted-foreground/50 tracking-[0.3em] uppercase block mb-4">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <h3 className="text-3xl lg:text-4xl xl:text-5xl font-light tracking-tight text-foreground mb-6 leading-[1.1]">
+                {isAr ? section.titleAr : section.titleEn}
+              </h3>
+              <div className="w-12 h-px bg-muted-foreground/20 mb-6" />
+              <p className="text-muted-foreground leading-relaxed text-base lg:text-lg max-w-md">
+                {isAr ? section.descAr : section.descEn}
+              </p>
+            </motion.div>
+
+            {/* Image side */}
+            <motion.div
+              style={{ y: imgY, scale: imgScale }}
+              className="col-span-12 lg:col-span-7 order-1 lg:order-2"
+            >
+              <div className="aspect-[4/3] overflow-hidden">
+                <img
+                  src={section.image}
+                  alt={section.titleEn}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
 const WorkplaceExperience = () => {
   const { language } = useLanguage();
   const isAr = language === "ar";
-  const [activeSection, setActiveSection] = useState(0);
-  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [expandedMobile, setExpandedMobile] = useState<number | null>(null);
-
-  useEffect(() => {
-    const observers: IntersectionObserver[] = [];
-    sectionRefs.current.forEach((ref, index) => {
-      if (!ref) return;
-      const observer = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) setActiveSection(index); },
-        { rootMargin: "-40% 0px -40% 0px", threshold: 0 }
-      );
-      observer.observe(ref);
-      observers.push(observer);
-    });
-    return () => observers.forEach((o) => o.disconnect());
-  }, []);
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -155,65 +206,19 @@ const WorkplaceExperience = () => {
           </div>
         </section>
 
-        {/* Scroll-driven editorial sections — Desktop */}
-        <section className="hidden lg:block py-24 bg-background">
-          <div className="container mx-auto px-6 lg:px-12">
-            <div className="grid grid-cols-12 gap-16">
-              {/* Left: Titles */}
-              <div className="col-span-5 space-y-6">
-                {sections.map((section, index) => (
-                  <div
-                    key={section.id}
-                    ref={(el) => { sectionRefs.current[index] = el; }}
-                    className="min-h-[30vh] flex items-start pt-8 cursor-pointer"
-                    onClick={() => setActiveSection(index)}
-                  >
-                    <div>
-                      <span className="text-xs text-muted-foreground/50 tracking-wider block mb-3">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      <h3
-                        className={`text-2xl lg:text-3xl font-light tracking-tight transition-colors duration-500 ${
-                          activeSection === index ? "text-foreground" : "text-muted-foreground/30"
-                        }`}
-                      >
-                        {isAr ? section.titleAr : section.titleEn}
-                      </h3>
-                    </div>
-                  </div>
-                ))}
-              </div>
+        {/* Sticky scroll-driven sections — Desktop */}
+        <div className="hidden lg:block">
+          {sections.map((section, index) => (
+            <StickySection
+              key={section.id}
+              section={section}
+              index={index}
+              isAr={isAr}
+            />
+          ))}
+        </div>
 
-              {/* Right: Sticky panel */}
-              <div className="col-span-7">
-                <div className="sticky top-32">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={activeSection}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.5 }}
-                    >
-                      <div className="aspect-[4/3] overflow-hidden mb-8">
-                        <img
-                          src={sections[activeSection].image}
-                          alt={sections[activeSection].titleEn}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <p className="text-muted-foreground leading-relaxed max-w-lg">
-                        {isAr ? sections[activeSection].descAr : sections[activeSection].descEn}
-                      </p>
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Scroll-driven editorial sections — Mobile */}
+        {/* Mobile accordion fallback */}
         <section className="lg:hidden py-16 bg-background">
           <div className="container mx-auto px-6">
             <div className="space-y-0">
