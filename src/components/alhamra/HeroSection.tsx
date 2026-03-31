@@ -168,7 +168,7 @@ const HeroSection = () => {
           <div className="absolute inset-0 flex items-center pointer-events-none select-none">
             <div className="w-full px-4 lg:px-0">
               <h1
-                className="hero-blend-text font-sans font-medium uppercase leading-[1.05] tracking-[-0.02em] whitespace-pre-wrap"
+                className="font-sans font-medium uppercase leading-[1.05] tracking-[-0.02em] whitespace-pre-wrap text-black"
                 style={{ fontSize: "clamp(2rem, 6.5vw, 6.5rem)" }}
               >
                 {lines.map((line, lineIndex) => (
