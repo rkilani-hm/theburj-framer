@@ -11,7 +11,7 @@ import towerFacadeDetail from "@/assets/tower-facade-detail.jpg";
   Crestline Hero — container = 1.5× text height
   ───────────────────────────────────────────────
   Measures the h1 text block, sets sticky frame to 1.5× that height.
-  Section height = 3.5× container → gives long scroll runway.
+  Section height = 1.5× container → gives scroll runway.
   Images start below, float up through pinned text on scroll.
 */
 
@@ -66,8 +66,8 @@ const HeroSection = () => {
           "تبدأ هنا.",
         ];
 
-  // Section = 3.5× container for enough scroll runway, min 300vh
-  const sectionH = containerH > 0 ? Math.max(containerH * 3.5, window.innerHeight * 3) : "350vh";
+  // Section = 1.5× container for scroll runway
+  const sectionH = containerH > 0 ? Math.max(containerH * 1.5, window.innerHeight * 1.5) : "150vh";
 
   return (
     <section
