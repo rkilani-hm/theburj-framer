@@ -57,14 +57,15 @@ const HeroSection = () => {
     <section
       ref={sectionRef}
       className="relative"
-      style={{
-        height: "250vh",
-        /* MUST be pure white for difference blend to produce black text */
-        backgroundColor: "#FFFFFF",
-      }}
+      style={{ height: "250vh" }}
     >
-      {/* Sticky frame — pins for the entire 250vh scroll */}
-      <div className="sticky top-0 h-screen flex items-center overflow-hidden">
+      {/* Sticky frame — white bg MUST be here (not on section)
+          because position:sticky creates an isolated stacking context.
+          mix-blend-mode on text can only blend within this context. */}
+      <div
+        className="sticky top-0 h-screen flex items-center overflow-hidden"
+        style={{ backgroundColor: "#FFFFFF" }}
+      >
         {/*
           Flat stacking context — no z-index anywhere.
           DOM order: images first (behind), text second (on top with blend).
