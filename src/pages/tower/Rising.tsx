@@ -98,28 +98,23 @@ const sections: RisingSection[] = [
 const Rising = () => {
   const { language } = useLanguage();
   const [activeIndex, setActiveIndex] = useState(0);
-  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Observe which section is in view
+  // Scroll-driven active section tracking for sticky container
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const idx = sectionRefs.current.indexOf(entry.target as HTMLDivElement);
-            if (idx !== -1) setActiveIndex(idx);
-          }
-        });
-      },
-      { rootMargin: "-40% 0px -40% 0px", threshold: 0 }
-    );
-
-    sectionRefs.current.forEach((ref) => {
-      if (ref) observer.observe(ref);
-    });
-
-    return () => observer.disconnect();
+    const handleScroll = () => {
+      const container = containerRef.current;
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      const containerHeight = container.offsetHeight;
+      const scrolled = -rect.top;
+      if (scrolled < 0) { setActiveIndex(0); return; }
+      const progress = Math.min(scrolled / (containerHeight - window.innerHeight), 1);
+      const idx = Math.min(Math.floor(progress * sections.length), sections.length - 1);
+      setActiveIndex(idx);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const { ref: heroRef, isInView: heroInView } = useScrollReveal();
