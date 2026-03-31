@@ -1,6 +1,6 @@
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect } from "react";
 
 import towerLowangle from "@/assets/tower-lowangle-clouds.png";
 import somTowerDetail from "@/assets/som-tower-detail.jpg";
@@ -8,48 +8,43 @@ import interiorLobby from "@/assets/interior-lobby.jpg";
 import towerFacadeDetail from "@/assets/tower-facade-detail.jpg";
 
 /*
-  Crestline Hero — container = 1.5× text height
-  ───────────────────────────────────────────────
-  Measures the h1 text block, sets sticky frame to 1.5× that height.
-  Section height = 1.5× container → gives scroll runway.
-  Images start below, float up through pinned text on scroll.
+  Crestline Hero — Fixed & Final
+  ───────────────────────────────
+  Section: 200vh — sticky pins for exactly 100vh of scroll.
+  Sticky frame: 100vh — full viewport, text centered.
+  Images: positioned with TOP values in the lower half.
+    Start: translateY = +1 full viewport height (hidden below frame)
+    End:   translateY = -0.3 viewport height (floated up into text zone)
+  All transforms in PIXELS based on window.innerHeight = 100% predictable.
+  Text: pinned center, never moves, blend effect on overlap.
 */
 
 const HeroSection = () => {
   const { language } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
-  const textRef = useRef<HTMLHeadingElement>(null);
-  const [containerH, setContainerH] = useState<number>(0);
-
-  // Measure text height → container = 1.5× text, section = 3.5× container
-  const measure = useCallback(() => {
-    if (textRef.current) {
-      const textH = textRef.current.getBoundingClientRect().height;
-      setContainerH(Math.round(textH * 1.5));
-    }
-  }, []);
+  const [vh, setVh] = useState(800);
 
   useEffect(() => {
-    // Measure after fonts load + initial render
-    measure();
-    window.addEventListener("resize", measure);
-    // Re-measure after fonts potentially load
-    document.fonts?.ready?.then(measure);
-    return () => window.removeEventListener("resize", measure);
-  }, [measure, language]);
+    const update = () => setVh(window.innerHeight);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"],
   });
 
-  // Images: staggered entry, float up through text
-  const imgY1 = useTransform(scrollYProgress, [0.15, 0.85], ["100%",  "-200%"]);
-  const imgY2 = useTransform(scrollYProgress, [0.2,  0.9 ], ["100%",  "-220%"]);
-  const imgY3 = useTransform(scrollYProgress, [0.18, 0.88], ["100%",  "-180%"]);
-  const imgY4 = useTransform(scrollYProgress, [0.22, 0.85], ["100%",  "-210%"]);
+  // All values in pixels based on viewport height — fully predictable.
+  // Images start 1vh below frame (hidden), end ~0.3vh above center (visible).
+  // Staggered start times so they don't all enter at once.
+  const imgY1 = useTransform(scrollYProgress, [0.05, 0.75], [vh,       -vh * 0.25]);
+  const imgY2 = useTransform(scrollYProgress, [0.1,  0.8 ], [vh * 1.1, -vh * 0.15]);
+  const imgY3 = useTransform(scrollYProgress, [0.08, 0.78], [vh * 1.2, -vh * 0.3 ]);
+  const imgY4 = useTransform(scrollYProgress, [0.12, 0.82], [vh * 1.05,-vh * 0.2 ]);
 
-  const indicatorOpacity = useTransform(scrollYProgress, [0, 0.08], [1, 0]);
+  const indicatorOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
   const lines =
     language === "en"
@@ -66,34 +61,27 @@ const HeroSection = () => {
           "تبدأ هنا.",
         ];
 
-  // Section = 1.5× container for scroll runway
-  const sectionH = containerH > 0 ? Math.max(containerH * 1.5, window.innerHeight * 1.5) : "150vh";
-
   return (
     <section
       ref={sectionRef}
       className="relative"
-      style={{
-        height: typeof sectionH === "number" ? `${sectionH}px` : sectionH,
-        backgroundColor: "#FFFFFF",
-      }}
+      style={{ height: "200vh" }}
     >
-      {/* Sticky frame — height = 1.5× text height (or fallback 80vh) */}
+      {/* Sticky frame — 100vh, white bg for blend math, pins for 100vh of scroll */}
       <div
-        className="sticky top-0 flex items-center justify-center overflow-hidden"
-        style={{
-          height: containerH > 0 ? `${containerH}px` : "80vh",
-          backgroundColor: "#FFFFFF",
-        }}
+        className="sticky top-0 h-screen overflow-hidden"
+        style={{ backgroundColor: "#FFFFFF" }}
       >
-        <div className="container mx-auto px-4 lg:px-12 relative w-full" style={{ height: containerH > 0 ? `${containerH}px` : "auto" }}>
+        <div className="relative w-full h-full">
 
-          {/* ── IMAGES (DOM first → paint behind text) ──
-              bottom:0 + translateY(100%) = hidden below frame on load */}
+          {/* ── IMAGES (DOM first → behind text) ──
+              Absolute positioned in lower portion of frame.
+              translateY starts at +1vh (below frame edge, clipped).
+              On scroll translateY goes negative → images rise up. */}
 
           <motion.div
             style={{ y: imgY1 }}
-            className="absolute bottom-0 left-[2%] lg:left-[5%] w-[38%] lg:w-[24%]"
+            className="absolute top-[30%] left-[2%] lg:left-[5%] w-[38%] lg:w-[24%]"
           >
             <div className="aspect-[3/4] overflow-hidden">
               <img src={towerLowangle} alt="Al Hamra Tower" className="w-full h-full object-cover" />
@@ -102,7 +90,7 @@ const HeroSection = () => {
 
           <motion.div
             style={{ y: imgY2 }}
-            className="absolute bottom-0 left-[20%] lg:left-[24%] w-[28%] lg:w-[18%]"
+            className="absolute top-[25%] left-[20%] lg:left-[24%] w-[28%] lg:w-[18%]"
           >
             <div className="aspect-[3/5] overflow-hidden">
               <img src={interiorLobby} alt="Tower interior" className="w-full h-full object-cover" />
@@ -111,7 +99,7 @@ const HeroSection = () => {
 
           <motion.div
             style={{ y: imgY3 }}
-            className="absolute bottom-0 right-[10%] lg:right-[18%] w-[35%] lg:w-[22%]"
+            className="absolute top-[35%] right-[10%] lg:right-[18%] w-[35%] lg:w-[22%]"
           >
             <div className="aspect-[3/4] overflow-hidden">
               <img src={somTowerDetail} alt="Tower facade" className="w-full h-full object-cover" />
@@ -120,18 +108,17 @@ const HeroSection = () => {
 
           <motion.div
             style={{ y: imgY4 }}
-            className="absolute bottom-0 right-[-2%] lg:right-[0%] w-[30%] lg:w-[20%]"
+            className="absolute top-[20%] right-[-2%] lg:right-[0%] w-[30%] lg:w-[20%]"
           >
             <div className="aspect-[3/4] overflow-hidden">
               <img src={towerFacadeDetail} alt="Architectural detail" className="w-full h-full object-cover" />
             </div>
           </motion.div>
 
-          {/* ── TEXT — pinned center, never moves ── */}
+          {/* ── TEXT — absolute center, never moves ── */}
           <div className="absolute inset-0 flex items-center pointer-events-none select-none">
-            <div className="w-full px-4 lg:px-0">
+            <div className="container mx-auto px-6 lg:px-12">
               <h1
-                ref={textRef}
                 className="hero-blend-text font-sans font-medium uppercase leading-[1.05] tracking-[-0.02em] whitespace-pre-wrap"
                 style={{ fontSize: "clamp(2rem, 6.5vw, 6.5rem)" }}
               >
