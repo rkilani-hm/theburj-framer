@@ -400,6 +400,95 @@
   text-align: right;
 }
 
+/* ═══════════════════════════════════════════════
+   Marquee Ticker — Infinite horizontal scroll
+   ═══════════════════════════════════════════════ */
+.marquee-track {
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.marquee-content {
+  display: flex;
+  animation: marquee-scroll 30s linear infinite;
+  will-change: transform;
+}
+
+.marquee-content:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ═══════════════════════════════════════════════
+   Clip-path reveal utilities
+   ═══════════════════════════════════════════════ */
+.clip-reveal-up {
+  clip-path: inset(100% 0 0 0);
+  animation: clip-up 1.2s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.clip-reveal-down {
+  clip-path: inset(0 0 100% 0);
+  animation: clip-down 1.2s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.clip-reveal-left {
+  clip-path: inset(0 100% 0 0);
+  animation: clip-left 1.2s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+@keyframes clip-up {
+  to { clip-path: inset(0% 0 0 0); }
+}
+
+@keyframes clip-down {
+  to { clip-path: inset(0 0 0% 0); }
+}
+
+@keyframes clip-left {
+  to { clip-path: inset(0 0% 0 0); }
+}
+
+/* ═══════════════════════════════════════════════
+   Smooth image zoom on hover
+   ═══════════════════════════════════════════════ */
+.img-zoom {
+  overflow: hidden;
+}
+
+.img-zoom img,
+.img-zoom video {
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.img-zoom:hover img,
+.img-zoom:hover video {
+  transform: scale(1.08);
+}
+
+/* ═══════════════════════════════════════════════
+   Text split-line reveal helper
+   ═══════════════════════════════════════════════ */
+.line-reveal {
+  overflow: hidden;
+  display: block;
+}
+
+.line-reveal > span {
+  display: block;
+  transform: translateY(100%);
+  animation: line-slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes line-slide-up {
+  to { transform: translateY(0); }
+}
+
 [dir="ltr"] {
   text-align: left;
 }

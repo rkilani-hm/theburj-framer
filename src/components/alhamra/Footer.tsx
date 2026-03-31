@@ -1,10 +1,14 @@
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ArrowUp } from "lucide-react";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 import alHamraLogo from "@/assets/al-hamra-logo.png";
 
 const Footer = () => {
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
+  const footerRef = useRef(null);
+  const isInView = useInView(footerRef, { once: true, margin: "-100px" });
 
   const navColumns = [
     {
@@ -52,17 +56,35 @@ const Footer = () => {
     { label: "YouTube", url: "https://www.youtube.com/@alhamratower" },
   ];
 
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.05, delayChildren: 0.1 },
+    },
+  };
+
+  const staggerItem = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
+  };
+
   return (
-    <footer className="bg-foreground text-background">
+    <footer ref={footerRef} className="bg-foreground text-background">
       {/* Main Footer */}
       <div className="container mx-auto px-6 lg:px-12 py-20 lg:py-28">
         {/* Top: Brand + Back to top */}
-        <div className="flex items-start justify-between mb-20">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="flex items-start justify-between mb-20"
+        >
           <div>
             <div className="flex items-center gap-4">
-              <img 
-                src={alHamraLogo} 
-                alt="Al Hamra Tower" 
+              <img
+                src={alHamraLogo}
+                alt="Al Hamra Tower"
                 className="h-12 lg:h-14 w-auto object-contain brightness-0 invert"
               />
               <h2 className="text-3xl lg:text-4xl font-sans font-medium uppercase tracking-[0.1em]">
@@ -80,14 +102,24 @@ const Footer = () => {
             <span className="hidden lg:inline tracking-wider uppercase">
               {language === "en" ? "Back to top" : "العودة للأعلى"}
             </span>
-            <ArrowUp size={16} className="group-hover:-translate-y-1 transition-transform duration-300" />
+            <motion.div
+              whileHover={{ y: -3 }}
+              transition={{ duration: 0.3 }}
+            >
+              <ArrowUp size={16} />
+            </motion.div>
           </button>
-        </div>
+        </motion.div>
 
-        {/* Navigation Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-20">
+        {/* Navigation Grid — staggered reveal */}
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-20"
+        >
           {navColumns.map((col) => (
-            <div key={col.heading.en}>
+            <motion.div key={col.heading.en} variants={staggerItem}>
               <h3 className="text-xs uppercase tracking-[0.2em] text-background/30 mb-6">
                 {col.heading[language]}
               </h3>
@@ -96,18 +128,31 @@ const Footer = () => {
                   <Link
                     key={link.href}
                     to={link.href}
-                    className="block text-sm text-background/60 hover:text-background transition-colors duration-300"
+                    className="block text-sm text-background/60 hover:text-background hover:translate-x-1 transition-all duration-300"
                   >
                     {link.label[language]}
                   </Link>
                 ))}
               </nav>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
+
+        {/* Decorative line */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={isInView ? { scaleX: 1 } : {}}
+          transition={{ duration: 1, delay: 0.4, ease: [0.76, 0, 0.24, 1] }}
+          className="h-px bg-background/10 mb-10 origin-left"
+        />
 
         {/* Social Links */}
-        <div className="flex flex-wrap gap-6 mb-20">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="flex flex-wrap gap-6 mb-20"
+        >
           {socialLinks.map((social) => (
             <a
               key={social.label}
@@ -119,7 +164,7 @@ const Footer = () => {
               {social.label}
             </a>
           ))}
-        </div>
+        </motion.div>
       </div>
 
       {/* Bottom Bar */}

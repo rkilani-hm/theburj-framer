@@ -15,7 +15,7 @@ const FloatingContact = () => {
       label: t("contact.phone"),
       value: "+965 2229 5000",
       href: "tel:+96522295000",
-      color: "bg-emerald-500 hover:bg-emerald-600",
+      color: "bg-charcoal hover:bg-charcoal-dark",
     },
     {
       icon: Mail,
@@ -30,7 +30,7 @@ const FloatingContact = () => {
       value: t("location.title"),
       href: "/contact",
       isRoute: true,
-      color: "bg-amber-500 hover:bg-amber-600",
+      color: "bg-silver hover:bg-slate-light",
     },
   ];
 

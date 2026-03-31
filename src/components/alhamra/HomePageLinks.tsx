@@ -1,8 +1,9 @@
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useScrollReveal, revealVariants } from "@/hooks/useScrollReveal";
+import { useState, useRef, MouseEvent } from "react";
 
 import somTowerSkyline from "@/assets/som-tower-skyline.jpg";
 import interiorLobby from "@/assets/interior-lobby.jpg";
@@ -61,7 +62,7 @@ const HomePageLinks = () => {
   ];
 
   return (
-    <section className="py-24 lg:py-32 bg-background">
+    <section className="py-24 lg:py-36 bg-background">
       <div className="container mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <motion.div
@@ -71,12 +72,18 @@ const HomePageLinks = () => {
           transition={{ duration: 0.6 }}
           className="mb-16"
         >
+          <motion.span
+            initial={{ width: 0 }}
+            animate={isInView ? { width: "3rem" } : { width: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="block h-px bg-primary mb-6"
+          />
           <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
             {language === "en" ? "EXPLORE" : "استكشف"}
           </span>
         </motion.div>
 
-        {/* Project List - Crestline numbered style */}
+        {/* Project List with hover image preview */}
         <div className="divide-y divide-border">
           {pages.map((page, index) => (
             <ProjectRow key={page.number} page={page} index={index} />
@@ -87,11 +94,36 @@ const HomePageLinks = () => {
   );
 };
 
+/* ============================================================
+   ProjectRow with cursor-following image preview
+   ============================================================ */
 const ProjectRow = ({ page, index }: { page: PageLinkItem; index: number }) => {
   const { ref, isInView } = useScrollReveal({ margin: "-50px" });
+  const [isHovered, setIsHovered] = useState(false);
+  const containerRef = useRef<HTMLAnchorElement>(null);
+
+  // Mouse position tracking with spring physics
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springX = useSpring(mouseX, { stiffness: 150, damping: 20 });
+  const springY = useSpring(mouseY, { stiffness: 150, damping: 20 });
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left - 140);
+    mouseY.set(e.clientY - rect.top - 100);
+  };
 
   return (
-    <Link to={page.link} className="block group">
+    <Link
+      ref={containerRef}
+      to={page.link}
+      className="block group relative"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onMouseMove={handleMouseMove}
+    >
       <motion.div
         ref={ref}
         initial={{ opacity: 0, y: 20 }}
@@ -101,7 +133,9 @@ const ProjectRow = ({ page, index }: { page: PageLinkItem; index: number }) => {
       >
         {/* Number */}
         <div className="col-span-2 lg:col-span-1">
-          <span className="text-sm font-sans text-muted-foreground">{page.number}</span>
+          <span className="text-sm font-sans text-muted-foreground group-hover:text-primary transition-colors duration-300">
+            {page.number}
+          </span>
         </div>
 
         {/* Location/Category */}
@@ -111,19 +145,39 @@ const ProjectRow = ({ page, index }: { page: PageLinkItem; index: number }) => {
 
         {/* Title */}
         <div className="col-span-12 lg:col-span-5 lg:col-start-5">
-          <h3 className="text-xl lg:text-2xl font-serif font-medium text-foreground group-hover:translate-x-2 transition-transform duration-300">
+          <h3 className="text-xl lg:text-2xl font-serif font-medium text-foreground group-hover:translate-x-3 transition-transform duration-500 ease-out">
             {page.title}
           </h3>
         </div>
 
         {/* Arrow */}
         <div className="hidden lg:flex col-span-1 col-start-12 justify-end">
-          <ArrowRight 
-            size={18} 
-            className="text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all duration-300" 
+          <ArrowRight
+            size={18}
+            className="text-muted-foreground group-hover:text-primary group-hover:translate-x-2 transition-all duration-300"
           />
         </div>
       </motion.div>
+
+      {/* Floating Image Preview */}
+      <AnimatePresence>
+        {isHovered && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="hidden lg:block absolute z-20 pointer-events-none w-[280px] h-[200px] overflow-hidden shadow-2xl"
+            style={{ x: springX, y: springY }}
+          >
+            <img
+              src={page.image}
+              alt={page.title}
+              className="w-full h-full object-cover"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Link>
   );
 };

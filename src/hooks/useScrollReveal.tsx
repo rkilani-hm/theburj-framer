@@ -42,4 +42,32 @@ export const revealVariants = {
     hidden: { opacity: 0, scale: 0.95 },
     visible: { opacity: 1, scale: 1 },
   },
+  // New: Clip-path inspired reveal (for use with motion style prop)
+  clipUp: {
+    hidden: { clipPath: "inset(100% 0 0 0)" },
+    visible: { clipPath: "inset(0% 0 0 0)" },
+  },
+  clipLeft: {
+    hidden: { clipPath: "inset(0 100% 0 0)" },
+    visible: { clipPath: "inset(0 0% 0 0)" },
+  },
+  // New: Stagger container
+  staggerContainer: {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.08, delayChildren: 0.1 },
+    },
+  },
+  staggerItem: {
+    hidden: { opacity: 0, y: 25 },
+    visible: { opacity: 1, y: 0 },
+  },
+};
+
+// Smooth easing curves
+export const easings = {
+  expoOut: [0.16, 1, 0.3, 1] as [number, number, number, number],
+  circOut: [0, 0.55, 0.45, 1] as [number, number, number, number],
+  power4Out: [0.76, 0, 0.24, 1] as [number, number, number, number],
 };
