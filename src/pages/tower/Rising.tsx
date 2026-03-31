@@ -121,7 +121,7 @@ const Rising = () => {
   const { ref: galleryRef, isInView: galleryInView } = useScrollReveal();
 
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="min-h-screen bg-background">
       <Header />
       <main>
         {/* Hero - Massive text */}
