@@ -401,6 +401,24 @@
 }
 
 /* ═══════════════════════════════════════════════
+   Hero Text Blend — Letters become transparent
+   over images as they scroll and overlap.
+   Uses mix-blend-mode so text reveals images
+   through the letterforms (Crestline-style).
+   ═══════════════════════════════════════════════ */
+.hero-blend-text {
+  mix-blend-mode: difference;
+  color: hsl(var(--foreground));
+  position: relative;
+  z-index: 10;
+}
+
+/* Dark mode — exclusion works better on dark backgrounds */
+.dark .hero-blend-text {
+  mix-blend-mode: exclusion;
+}
+
+/* ═══════════════════════════════════════════════
    Marquee Ticker — Infinite horizontal scroll
    ═══════════════════════════════════════════════ */
 .marquee-track {

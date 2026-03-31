@@ -16,96 +16,86 @@ const HeroSection = () => {
     offset: ["start start", "end start"],
   });
 
-  // Parallax: images at different scroll speeds
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -150]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -250]);
-  const y3 = useTransform(scrollYProgress, [0, 1], [0, -180]);
-  // Title parallax (subtle)
-  const titleY = useTransform(scrollYProgress, [0, 1], [0, -80]);
-  const titleOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  // Images start below text and parallax upward to overlap
+  const imgY1 = useTransform(scrollYProgress, [0, 1], ["15%", "-40%"]);
+  const imgY2 = useTransform(scrollYProgress, [0, 1], ["25%", "-35%"]);
+  const imgY3 = useTransform(scrollYProgress, [0, 1], ["20%", "-45%"]);
+  const imgY4 = useTransform(scrollYProgress, [0, 1], ["30%", "-30%"]);
 
-  const lines =
+  // Text stays relatively still, fades slightly
+  const textOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0.3]);
+  // Scroll indicator fades out quickly
+  const indicatorOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
+
+  const words =
     language === "en"
       ? [
-          "Where Architectural",
-          "Gravity Meets Enduring",
-          "Presence — Your",
-          "Business Starts Here.",
+          "Where", "Functionality",
+          "Meets", "Aesthetic,",
+          "Your", "Architectural",
+          "Journey", "Starts Here.",
         ]
       : [
-          "حيث تلتقي الهيبة",
-          "المعمارية بالحضور",
-          "الدائم — تبدأ",
-          "رحلتك التجارية هنا.",
+          "حيث", "تلتقي",
+          "الهيبة", "المعمارية",
+          "بالحضور", "الدائم",
+          "رحلتك", "التجارية هنا.",
         ];
 
   return (
-    <section ref={sectionRef} className="relative bg-background overflow-hidden">
-      {/* Hero Text — Line-by-line reveal with clip-path */}
-      <motion.div
-        style={{ y: titleY, opacity: titleOpacity }}
-        className="container mx-auto px-6 lg:px-12 pt-32 lg:pt-44 pb-16 lg:pb-24 relative z-10"
-      >
-        <h1 className="text-[clamp(2rem,5.5vw,5.5rem)] font-sans font-medium uppercase leading-[1.05] tracking-[-0.02em] text-foreground overflow-hidden">
-          {lines.map((line, lineIndex) => (
-            <span key={lineIndex} className="block overflow-hidden">
-              <motion.span
-                initial={{ y: "100%", opacity: 0 }}
-                animate={{ y: "0%", opacity: 1 }}
-                transition={{
-                  duration: 1,
-                  delay: 0.3 + lineIndex * 0.12,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
-                className="block"
-              >
-                {line}
-              </motion.span>
-            </span>
-          ))}
-        </h1>
+    <section
+      ref={sectionRef}
+      className="relative bg-background overflow-hidden"
+      style={{ minHeight: "140vh" }}
+    >
+      {/* ═══════════════════════════════════════════
+          HERO CONTAINER — Text + Images overlap
+          ═══════════════════════════════════════════ */}
+      <div className="sticky top-0 h-screen flex items-center overflow-hidden">
+        <div className="container mx-auto px-6 lg:px-12 relative">
 
-        {/* Subtle overline + scroll indicator */}
-        <div className="flex items-center justify-between mt-12">
-          <motion.p
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 1 }}
-            className="text-xs uppercase tracking-[0.3em] text-muted-foreground"
-          >
-            {language === "en" ? "Kuwait City, Kuwait" : "مدينة الكويت"}
-          </motion.p>
+          {/* ── TEXT LAYER ──
+              Huge uppercase, centered, acts as the background layer.
+              mix-blend-mode makes it transparent over images. */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.2, duration: 0.8 }}
-            className="flex flex-col items-center gap-2"
+            style={{ opacity: textOpacity }}
+            className="relative z-10 pointer-events-none select-none"
           >
-            <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-              {language === "en" ? "Scroll" : "مرر"}
-            </span>
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-              className="w-px h-8 bg-foreground/20"
-            />
+            <h1 className="hero-blend-text text-[clamp(2.2rem,7vw,7rem)] font-sans font-semibold uppercase leading-[1.0] tracking-[-0.03em] text-foreground text-center lg:text-left">
+              {words.map((word, i) => (
+                <span key={i} className="inline-block overflow-hidden mx-[0.15em]">
+                  <motion.span
+                    initial={{ y: "110%", opacity: 0 }}
+                    animate={{ y: "0%", opacity: 1 }}
+                    transition={{
+                      duration: 1,
+                      delay: 0.2 + i * 0.06,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                    className="inline-block"
+                  >
+                    {word}
+                  </motion.span>
+                </span>
+              ))}
+            </h1>
           </motion.div>
-        </div>
-      </motion.div>
 
-      {/* Image Grid — Staggered parallax columns with clip-path reveal */}
-      <div className="container mx-auto px-6 lg:px-12 pb-24 lg:pb-32">
-        <div className="grid grid-cols-12 gap-4 lg:gap-6">
-          {/* Left column — two stacked images */}
+          {/* ── IMAGE LAYER ──
+              Images positioned absolutely over the text grid,
+              parallax upward on scroll to overlap the text.
+              They sit above the text layer so blend-mode takes effect. */}
+
+          {/* Image 1 — Left, overlapping first two text lines */}
           <motion.div
-            style={{ y: y1 }}
-            className="col-span-6 lg:col-span-3 space-y-4 lg:space-y-6"
+            style={{ y: imgY1 }}
+            className="absolute top-[5%] left-[3%] lg:left-[5%] w-[35%] lg:w-[22%] z-20"
           >
             <motion.div
-              initial={{ clipPath: "inset(100% 0 0 0)" }}
-              animate={{ clipPath: "inset(0% 0 0 0)" }}
-              transition={{ duration: 1.2, delay: 0.5, ease: [0.76, 0, 0.24, 1] }}
-              className="aspect-[3/4] overflow-hidden"
+              initial={{ clipPath: "inset(100% 0 0 0)", opacity: 0 }}
+              animate={{ clipPath: "inset(0% 0 0 0)", opacity: 1 }}
+              transition={{ duration: 1.3, delay: 0.6, ease: [0.76, 0, 0.24, 1] }}
+              className="aspect-[3/4] overflow-hidden shadow-2xl"
             >
               <motion.img
                 src={towerLowangle}
@@ -113,15 +103,21 @@ const HeroSection = () => {
                 className="w-full h-full object-cover"
                 initial={{ scale: 1.3 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 1.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 2, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
               />
             </motion.div>
+          </motion.div>
+
+          {/* Image 2 — Center-left, slightly lower */}
+          <motion.div
+            style={{ y: imgY2 }}
+            className="absolute top-[15%] left-[15%] lg:left-[20%] w-[30%] lg:w-[18%] z-20"
+          >
             <motion.div
-              initial={{ clipPath: "inset(100% 0 0 0)" }}
-              animate={{ clipPath: "inset(0% 0 0 0)" }}
-              transition={{ duration: 1.2, delay: 0.8, ease: [0.76, 0, 0.24, 1] }}
-              className="aspect-[4/5] overflow-hidden mt-8 lg:mt-16"
+              initial={{ clipPath: "inset(0 0 100% 0)", opacity: 0 }}
+              animate={{ clipPath: "inset(0 0 0% 0)", opacity: 1 }}
+              transition={{ duration: 1.3, delay: 0.8, ease: [0.76, 0, 0.24, 1] }}
+              className="aspect-[4/5] overflow-hidden shadow-2xl"
             >
               <motion.img
                 src={interiorLobby}
@@ -129,45 +125,43 @@ const HeroSection = () => {
                 className="w-full h-full object-cover"
                 initial={{ scale: 1.3 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 1.8, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 2, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
               />
             </motion.div>
           </motion.div>
 
-          {/* Center — larger offset image */}
+          {/* Image 3 — Center-right, larger */}
           <motion.div
-            style={{ y: y2 }}
-            className="col-span-6 lg:col-span-4 lg:col-start-5 pt-12 lg:pt-24"
+            style={{ y: imgY3 }}
+            className="absolute top-[25%] right-[8%] lg:right-[18%] w-[38%] lg:w-[24%] z-20"
           >
             <motion.div
-              initial={{ clipPath: "inset(0 0 100% 0)" }}
-              animate={{ clipPath: "inset(0 0 0% 0)" }}
-              transition={{ duration: 1.4, delay: 0.6, ease: [0.76, 0, 0.24, 1] }}
-              className="aspect-[3/4] overflow-hidden"
+              initial={{ clipPath: "inset(100% 0 0 0)", opacity: 0 }}
+              animate={{ clipPath: "inset(0% 0 0 0)", opacity: 1 }}
+              transition={{ duration: 1.4, delay: 0.7, ease: [0.76, 0, 0.24, 1] }}
+              className="aspect-[3/4] overflow-hidden shadow-2xl"
             >
               <motion.img
                 src={somTowerDetail}
-                alt="Tower facade detail"
+                alt="Tower facade"
                 className="w-full h-full object-cover"
                 initial={{ scale: 1.4 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 2, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 2.2, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
               />
             </motion.div>
           </motion.div>
 
-          {/* Right column — offset image */}
+          {/* Image 4 — Far right, offset */}
           <motion.div
-            style={{ y: y3 }}
-            className="hidden lg:block col-span-3 col-start-10 pt-6"
+            style={{ y: imgY4 }}
+            className="hidden lg:block absolute top-[0%] right-[0%] w-[20%] z-20"
           >
             <motion.div
-              initial={{ clipPath: "inset(100% 0 0 0)" }}
-              animate={{ clipPath: "inset(0% 0 0 0)" }}
+              initial={{ clipPath: "inset(0 100% 0 0)", opacity: 0 }}
+              animate={{ clipPath: "inset(0 0% 0 0)", opacity: 1 }}
               transition={{ duration: 1.2, delay: 0.9, ease: [0.76, 0, 0.24, 1] }}
-              className="aspect-[3/4] overflow-hidden"
+              className="aspect-[3/4] overflow-hidden shadow-2xl"
             >
               <motion.img
                 src={towerFacadeDetail}
@@ -176,12 +170,29 @@ const HeroSection = () => {
                 initial={{ scale: 1.3 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 1.8, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                whileHover={{ scale: 1.05 }}
               />
             </motion.div>
           </motion.div>
         </div>
       </div>
+
+      {/* Scroll indicator — fixed at bottom of sticky frame */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 0.8 }}
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2 pointer-events-none"
+        style={{ opacity: indicatorOpacity }}
+      >
+        <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+          {language === "en" ? "Scroll" : "مرر"}
+        </span>
+        <motion.div
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          className="w-px h-6 bg-foreground/30"
+        />
+      </motion.div>
     </section>
   );
 };
