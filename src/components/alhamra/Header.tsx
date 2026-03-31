@@ -5,6 +5,92 @@ import alHamraLogo from "@/assets/al-hamra-logo.png";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 
+/* ============================================================
+   Mobile Menu Accordion Group
+   — Big tappable group label, collapsible sub-items
+   ============================================================ */
+interface MobileMenuGroupProps {
+  group: {
+    id: string;
+    label: { en: string; ar: string };
+    items: { href: string; label: { en: string; ar: string } }[];
+  };
+  language: "en" | "ar";
+  location: { pathname: string };
+  onLinkClick: () => void;
+  variants: any;
+}
+
+const MobileMenuGroup = ({ group, language, location, onLinkClick, variants }: MobileMenuGroupProps) => {
+  const [expanded, setExpanded] = useState(false);
+  const isActive = group.items.some(
+    (item) => location.pathname === item.href || location.pathname.startsWith(item.href + "/")
+  );
+
+  return (
+    <motion.div variants={variants} className="border-b border-background/8">
+      {/* Group header — big tappable label */}
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="w-full flex items-center justify-between py-4 group"
+      >
+        <span
+          className={`text-xl font-serif font-medium tracking-wide transition-colors duration-300 ${
+            isActive ? "text-primary" : "text-background/80 group-active:text-background"
+          }`}
+        >
+          {group.label[language]}
+        </span>
+        <motion.div
+          animate={{ rotate: expanded ? 180 : 0 }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <ChevronDown size={18} className="text-background/40" />
+        </motion.div>
+      </button>
+
+      {/* Collapsible sub-items */}
+      <AnimatePresence initial={false}>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="pb-4 pl-1 space-y-0.5">
+              {group.items.map((item, i) => (
+                <motion.div
+                  key={item.href}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.04, duration: 0.3 }}
+                >
+                  <Link
+                    to={item.href}
+                    onClick={onLinkClick}
+                    className={`block py-2.5 text-sm transition-colors duration-200 ${
+                      location.pathname === item.href
+                        ? "text-primary"
+                        : "text-background/50 active:text-background"
+                    }`}
+                  >
+                    {item.label[language]}
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+};
+
+/* ============================================================
+   Header Component
+   ============================================================ */
 const Header = () => {
   const { language, toggleLanguage } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -233,7 +319,7 @@ const Header = () => {
         </div>
       </header>
 
-      {/* Fullscreen Overlay Menu */}
+      {/* Fullscreen Overlay Menu — Mobile only */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -241,54 +327,49 @@ const Header = () => {
             animate={{ clipPath: "circle(150% at calc(100% - 40px) 32px)" }}
             exit={{ clipPath: "circle(0% at calc(100% - 40px) 32px)" }}
             transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
-            className="fixed inset-0 z-[55] bg-foreground"
+            className="fixed inset-0 z-[55] bg-foreground lg:hidden"
           >
-            <div className="container mx-auto px-6 pt-24 pb-12 h-full overflow-y-auto">
-              <motion.nav
-                variants={menuContainerVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                className="space-y-6"
-              >
-                {navGroups.map((group) => (
-                  <motion.div key={group.id} variants={menuItemVariants}>
-                    <h3 className="text-xs uppercase tracking-[0.3em] text-background/30 mb-3">
-                      {group.label[language]}
-                    </h3>
-                    <div className="space-y-1">
-                      {group.items.map((item) => (
-                        <Link
-                          key={item.href}
-                          to={item.href}
-                          onClick={() => setMenuOpen(false)}
-                          className={`block py-2 text-2xl font-serif font-medium transition-all duration-300 ${
-                            location.pathname === item.href
-                              ? "text-primary"
-                              : "text-background/70 hover:text-background hover:translate-x-3"
-                          }`}
-                        >
-                          {item.label[language]}
-                        </Link>
-                      ))}
-                    </div>
-                    <div className="h-px bg-background/10 mt-4" />
-                  </motion.div>
-                ))}
+            <div className="absolute inset-0 pt-20 pb-8 overflow-y-auto overscroll-contain">
+              <div className="container mx-auto px-6">
+                <motion.nav
+                  variants={menuContainerVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  className="space-y-1 pt-6"
+                >
+                  {navGroups.map((group) => (
+                    <MobileMenuGroup
+                      key={group.id}
+                      group={group}
+                      language={language}
+                      location={location}
+                      onLinkClick={() => setMenuOpen(false)}
+                      variants={menuItemVariants}
+                    />
+                  ))}
 
-                {/* Footer info in menu */}
-                <motion.div variants={menuItemVariants} className="pt-8">
-                  <p className="text-sm text-background/30 tracking-wide">
-                    {language === "en" ? "Kuwait City, State of Kuwait" : "مدينة الكويت، دولة الكويت"}
-                  </p>
-                  <a
-                    href="mailto:leasing@alhamra.com.kw"
-                    className="text-sm text-background/50 hover:text-background transition-colors mt-1 block"
-                  >
-                    leasing@alhamra.com.kw
-                  </a>
-                </motion.div>
-              </motion.nav>
+                  {/* Footer info in menu */}
+                  <motion.div variants={menuItemVariants} className="pt-10 pb-4">
+                    <div className="h-px bg-background/10 mb-6" />
+                    <p className="text-xs text-background/30 tracking-wide uppercase mb-1">
+                      {language === "en" ? "Kuwait City, State of Kuwait" : "مدينة الكويت، دولة الكويت"}
+                    </p>
+                    <a
+                      href="mailto:leasing@alhamra.com.kw"
+                      className="text-sm text-background/50 hover:text-background transition-colors block"
+                    >
+                      leasing@alhamra.com.kw
+                    </a>
+                    <a
+                      href="tel:+96522295000"
+                      className="text-sm text-background/50 hover:text-background transition-colors block mt-1"
+                    >
+                      +965 2229 5000
+                    </a>
+                  </motion.div>
+                </motion.nav>
+              </div>
             </div>
           </motion.div>
         )}
