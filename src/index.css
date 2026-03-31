@@ -3,10 +3,11 @@
 @tailwind utilities;
 
 /* Al Hamra Tower Design System
-   هيبة المكان — A Place of Gravity
-   "Limestone & Light" — Luxury Corporate
-   Sculptural warmth inspired by the tower's carved stone facade
-   All colors in HSL
+   Official Brand Identity Guidelines
+   Main: #CD1719 (Al Hamra Red) · #B2B2B2 (Silver Grey)
+   Sub:  #1D1D1B (Near Black)   · #EDEDED (Light Grey)
+   English: Century Gothic Bold/Regular
+   Arabic:  Ge Flow Bold/Regular
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
@@ -15,134 +16,155 @@
 
 @layer base {
   :root {
-    /* 7-Star Luxury Palette - "Limestone & Light" */
-    /* Warm Limestone - Main Background #F9F8F4 */
-    --background: 45 33% 97%;
-    /* Deep Slate - Primary Text #2C3E50 */
-    --foreground: 210 29% 24%;
+    /* ═══════════════════════════════════════════════
+       Al Hamra Official Brand Palette
+       Source: Al Hamra Identity Guidelines
+       Main:  #CD1719 (Red) · #B2B2B2 (Silver)
+       Sub:   #1D1D1B (Near Black) · #EDEDED (Light Grey)
+       ═══════════════════════════════════════════════ */
 
-    /* Cool Grey - Secondary/Cards #F0F2F5 */
-    --card: 220 20% 95%;
-    --card-foreground: 210 29% 24%;
+    /* Light Grey Background — #EDEDED */
+    --background: 0 0% 93%;
+    /* Near Black Text — #1D1D1B */
+    --foreground: 60 4% 11%;
 
-    --popover: 45 33% 97%;
-    --popover-foreground: 210 29% 24%;
+    /* Cards — Pure White for contrast on #EDEDED bg */
+    --card: 0 0% 100%;
+    --card-foreground: 60 4% 11%;
 
-    /* Rich Charcoal - Primary Accent #121212 */
-    --primary: 0 0% 7%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 60 4% 11%;
+
+    /* Al Hamra Red — #CD1719 — Primary Brand Accent */
+    --primary: 359 80% 45%;
     --primary-foreground: 0 0% 100%;
 
-    /* Warm Stone Secondary */
-    --secondary: 40 20% 94%;
-    --secondary-foreground: 210 29% 24%;
+    /* Silver Grey Secondary — #B2B2B2 tinted lighter */
+    --secondary: 0 0% 90%;
+    --secondary-foreground: 60 4% 11%;
 
-    /* Soft Muted */
-    --muted: 40 15% 92%;
-    --muted-foreground: 210 15% 45%;
+    /* Muted — Soft grey for subdued elements */
+    --muted: 0 0% 88%;
+    --muted-foreground: 0 0% 40%;
 
-    /* Light Stone Accent */
-    --accent: 40 20% 92%;
-    --accent-foreground: 210 29% 24%;
+    /* Accent — Soft red tint for hover states */
+    --accent: 359 30% 95%;
+    --accent-foreground: 359 80% 40%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 359 80% 45%;
+    --destructive-foreground: 0 0% 100%;
 
-    /* Pale Beige Borders #E5E0D8 */
-    --border: 35 20% 87%;
-    --input: 35 20% 87%;
-    --ring: 0 0% 7%;
+    /* Silver Grey Borders — #B2B2B2 */
+    --border: 0 0% 82%;
+    --input: 0 0% 82%;
+    --ring: 359 80% 45%;
 
     --radius: 0.25rem;
 
-    /* Custom Al Hamra 7-Star Tokens */
-    --limestone: 45 33% 97%;
-    --limestone-warm: 40 30% 95%;
-    --cool-grey: 220 20% 95%;
-    --deep-slate: 210 29% 24%;
-    --slate-light: 210 20% 35%;
-    --charcoal: 0 0% 7%;
-    --charcoal-light: 0 0% 20%;
-    --charcoal-dark: 0 0% 4%;
-    --beige: 35 20% 87%;
-    --beige-light: 38 25% 92%;
-    
+    /* ── Al Hamra Brand Tokens ── */
+    /* Brand Red Scale */
+    --alhamra-red: 359 80% 45%;
+    --alhamra-red-light: 359 70% 92%;
+    --alhamra-red-dark: 359 85% 35%;
+
+    /* Brand Neutrals */
+    --limestone: 0 0% 93%;
+    --limestone-warm: 0 0% 96%;
+    --cool-grey: 0 0% 90%;
+    --deep-slate: 60 4% 11%;
+    --slate-light: 0 0% 30%;
+    --charcoal: 60 4% 11%;
+    --charcoal-light: 0 0% 25%;
+    --charcoal-dark: 0 0% 6%;
+    --beige: 0 0% 82%;
+    --beige-light: 0 0% 88%;
+    --silver: 0 0% 70%;
+
     /* Hairline divider */
-    --hairline: 0 0% 0% / 0.08;
-    
+    --hairline: 0 0% 0% / 0.10;
+
     /* Glassmorphism */
-    --glass-bg: 45 33% 97% / 0.85;
+    --glass-bg: 0 0% 100% / 0.80;
     --glass-blur: 12px;
 
-    /* Gradient tokens */
-    --gradient-limestone: linear-gradient(180deg, hsl(45 33% 97%) 0%, hsl(40 30% 95%) 100%);
-    --gradient-cool: linear-gradient(180deg, hsl(220 20% 95%) 0%, hsl(45 33% 97%) 100%);
-    --gradient-overlay: linear-gradient(180deg, transparent 0%, hsl(210 29% 24% / 0.4) 100%);
+    /* Gradient tokens — brand-aligned */
+    --gradient-limestone: linear-gradient(180deg, hsl(0 0% 93%) 0%, hsl(0 0% 96%) 100%);
+    --gradient-cool: linear-gradient(180deg, hsl(0 0% 96%) 0%, hsl(0 0% 93%) 100%);
+    --gradient-overlay: linear-gradient(180deg, transparent 0%, hsl(60 4% 11% / 0.5) 100%);
 
-    --sidebar-background: 45 33% 96%;
-    --sidebar-foreground: 210 29% 24%;
-    --sidebar-primary: 0 0% 7%;
+    --sidebar-background: 0 0% 96%;
+    --sidebar-foreground: 60 4% 11%;
+    --sidebar-primary: 359 80% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 40 20% 92%;
-    --sidebar-accent-foreground: 210 29% 24%;
-    --sidebar-border: 35 20% 87%;
-    --sidebar-ring: 0 0% 7%;
+    --sidebar-accent: 359 30% 95%;
+    --sidebar-accent-foreground: 60 4% 11%;
+    --sidebar-border: 0 0% 82%;
+    --sidebar-ring: 359 80% 45%;
   }
 
   .dark {
-    --background: 0 0% 6%;
-    --foreground: 45 20% 92%;
+    /* Al Hamra Dark Mode — Near Black base #1D1D1B */
+    --background: 60 4% 7%;
+    --foreground: 0 0% 93%;
 
-    --card: 0 0% 9%;
-    --card-foreground: 45 20% 92%;
+    --card: 60 4% 10%;
+    --card-foreground: 0 0% 93%;
 
-    --popover: 0 0% 6%;
-    --popover-foreground: 45 20% 92%;
+    --popover: 60 4% 7%;
+    --popover-foreground: 0 0% 93%;
 
-    --primary: 45 20% 90%;
-    --primary-foreground: 0 0% 6%;
+    /* Al Hamra Red — slightly lifted for dark bg */
+    --primary: 359 80% 50%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 12%;
-    --secondary-foreground: 45 20% 92%;
+    --secondary: 60 2% 14%;
+    --secondary-foreground: 0 0% 93%;
 
-    --muted: 0 0% 15%;
+    --muted: 60 2% 16%;
     --muted-foreground: 0 0% 55%;
 
-    --accent: 0 0% 12%;
-    --accent-foreground: 45 20% 92%;
+    --accent: 359 40% 15%;
+    --accent-foreground: 359 70% 70%;
 
-    --destructive: 0 62% 30%;
+    --destructive: 359 70% 40%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 45 20% 90%;
+    --border: 60 2% 20%;
+    --input: 60 2% 20%;
+    --ring: 359 80% 50%;
 
-    --limestone: 0 0% 8%;
-    --limestone-warm: 0 0% 10%;
-    --cool-grey: 0 0% 12%;
-    --deep-slate: 45 15% 88%;
-    --slate-light: 45 12% 70%;
-    --charcoal: 45 20% 90%;
-    --charcoal-light: 45 15% 75%;
-    --charcoal-dark: 45 20% 95%;
-    --beige: 0 0% 20%;
-    --beige-light: 0 0% 16%;
-    
-    --hairline: 255 255% 255% / 0.08;
-    --glass-bg: 0 0% 6% / 0.85;
+    /* Brand tokens — dark mode */
+    --alhamra-red: 359 80% 50%;
+    --alhamra-red-light: 359 50% 20%;
+    --alhamra-red-dark: 359 85% 40%;
 
-    --gradient-limestone: linear-gradient(180deg, hsl(0 0% 6%) 0%, hsl(0 0% 10%) 100%);
-    --gradient-cool: linear-gradient(180deg, hsl(0 0% 12%) 0%, hsl(0 0% 6%) 100%);
-    --gradient-overlay: linear-gradient(180deg, transparent 0%, hsl(0 0% 3% / 0.6) 100%);
+    --limestone: 60 4% 8%;
+    --limestone-warm: 60 4% 10%;
+    --cool-grey: 60 2% 14%;
+    --deep-slate: 0 0% 88%;
+    --slate-light: 0 0% 65%;
+    --charcoal: 0 0% 93%;
+    --charcoal-light: 0 0% 75%;
+    --charcoal-dark: 0 0% 96%;
+    --beige: 60 2% 22%;
+    --beige-light: 60 2% 18%;
+    --silver: 0 0% 50%;
 
-    --sidebar-background: 0 0% 8%;
-    --sidebar-foreground: 45 20% 92%;
-    --sidebar-primary: 45 20% 90%;
-    --sidebar-primary-foreground: 0 0% 6%;
-    --sidebar-accent: 0 0% 12%;
-    --sidebar-accent-foreground: 45 20% 92%;
-    --sidebar-border: 0 0% 18%;
-    --sidebar-ring: 45 20% 90%;
+    --hairline: 0 0% 100% / 0.08;
+    --glass-bg: 60 4% 7% / 0.85;
+
+    --gradient-limestone: linear-gradient(180deg, hsl(60 4% 7%) 0%, hsl(60 4% 10%) 100%);
+    --gradient-cool: linear-gradient(180deg, hsl(60 2% 14%) 0%, hsl(60 4% 7%) 100%);
+    --gradient-overlay: linear-gradient(180deg, transparent 0%, hsl(0 0% 3% / 0.7) 100%);
+
+    --sidebar-background: 60 4% 8%;
+    --sidebar-foreground: 0 0% 93%;
+    --sidebar-primary: 359 80% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 359 40% 15%;
+    --sidebar-accent-foreground: 0 0% 93%;
+    --sidebar-border: 60 2% 20%;
+    --sidebar-ring: 359 80% 50%;
   }
 }
 
@@ -183,13 +205,13 @@
     line-height: 1.2;
   }
 
-  /* Stone Slab Cards - Sharp precision */
+  /* Al Hamra Brand Cards — Clean precision */
   .card-limestone {
-    @apply bg-background border border-beige rounded-none;
+    @apply bg-card border border-beige rounded-none;
     box-shadow: 0 4px 20px rgba(0,0,0,0.03);
   }
 
-  /* 7-Star Section Spacing - 50% more generous */
+  /* Al Hamra Section Spacing — Generous whitespace */
   .section-sculptural {
     @apply py-48 md:py-60;
   }
@@ -392,10 +414,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--grey-soft));
+  background: hsl(var(--silver));
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--grey-medium));
+  background: hsl(var(--slate-light));
 }

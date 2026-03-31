@@ -22,7 +22,7 @@ const elementColors: Record<string, string> = {
   A: "hsl(var(--primary))",
   B: "hsl(var(--primary) / 0.8)",
   C: "hsl(var(--primary) / 0.6)",
-  D: "hsl(142, 76%, 36%)", // Accent green for the breakthrough element
+  D: "hsl(0, 0%, 45%)", // Silver accent for the breakthrough element
   E: "hsl(var(--primary) / 0.4)",
 };
 

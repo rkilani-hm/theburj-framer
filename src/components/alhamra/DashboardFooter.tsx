@@ -63,8 +63,8 @@ const DashboardFooter = ({ language }: DashboardFooterProps) => {
             >
               <Link
                 to="/tower"
-                className="flex items-center gap-1.5 md:gap-2 px-3 md:px-6 py-2 md:py-2.5 bg-sky-500 border border-sky-600 rounded-lg
-                         hover:bg-sky-600 transition-all duration-300 group shadow-md shadow-sky-200/50 flex-shrink-0"
+                className="flex items-center gap-1.5 md:gap-2 px-3 md:px-6 py-2 md:py-2.5 bg-primary border border-alhamra-red-dark rounded-lg
+                         hover:bg-alhamra-red-dark transition-all duration-300 group shadow-md shadow-sky-200/50 flex-shrink-0"
               >
                 <ArrowLeft 
                   size={14} 

@@ -195,9 +195,9 @@ const Sustainability = () => {
             {/* Circular Progress Charts */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
               <CircularProgress value={25} label="Solar Heat Reduction" delay={0} />
-              <CircularProgress value={40} label="Limestone Thermal Shield (mm)" suffix="mm" maxValue={50} delay={1} color="hsl(142, 76%, 36%)" />
-              <CircularProgress value={100} label="Recyclable Blinds" delay={2} color="hsl(45, 93%, 47%)" />
-              <CircularProgress value={74} label="Floors Protected" suffix=" floors" maxValue={74} delay={3} color="hsl(217, 91%, 60%)" />
+              <CircularProgress value={40} label="Limestone Thermal Shield (mm)" suffix="mm" maxValue={50} delay={1} color="hsl(0, 0%, 45%)" />
+              <CircularProgress value={100} label="Recyclable Blinds" delay={2} color="hsl(359, 80%, 45%)" />
+              <CircularProgress value={74} label="Floors Protected" suffix=" floors" maxValue={74} delay={3} color="hsl(359, 65%, 55%)" />
             </div>
 
             {/* Stat Cards Grid */}

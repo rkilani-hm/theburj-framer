@@ -24,10 +24,10 @@ interface HotspotDetailModalProps {
 }
 
 const iconMap: Record<string, React.ReactNode> = {
-  height: <Building2 className="w-8 h-8 text-sky-500" />,
-  floorplate: <LayoutGrid className="w-8 h-8 text-sky-500" />,
-  fiber: <Wifi className="w-8 h-8 text-sky-500" />,
-  power: <Zap className="w-8 h-8 text-sky-500" />,
+  height: <Building2 className="w-8 h-8 text-primary" />,
+  floorplate: <LayoutGrid className="w-8 h-8 text-primary" />,
+  fiber: <Wifi className="w-8 h-8 text-primary" />,
+  power: <Zap className="w-8 h-8 text-primary" />,
 };
 
 const HotspotDetailModal = ({
@@ -49,7 +49,7 @@ const HotspotDetailModal = ({
         <DialogHeader>
           <div className="flex items-center gap-4 mb-2">
             <div className="p-3 bg-sky-50 rounded-xl border border-sky-100">
-              {iconMap[hotspot.id] || <Building2 className="w-8 h-8 text-sky-500" />}
+              {iconMap[hotspot.id] || <Building2 className="w-8 h-8 text-primary" />}
             </div>
             <div>
               <DialogTitle className="text-xl font-mono font-bold text-slate-800">

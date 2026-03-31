@@ -47,7 +47,12 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        /* 7-Star Luxury Palette */
+        /* Al Hamra Brand Palette */
+        "alhamra-red": {
+          DEFAULT: "hsl(var(--alhamra-red))",
+          light: "hsl(var(--alhamra-red-light))",
+          dark: "hsl(var(--alhamra-red-dark))",
+        },
         limestone: {
           DEFAULT: "hsl(var(--limestone))",
           warm: "hsl(var(--limestone-warm))",
@@ -66,6 +71,7 @@ export default {
           DEFAULT: "hsl(var(--beige))",
           light: "hsl(var(--beige-light))",
         },
+        silver: "hsl(var(--silver))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -79,8 +85,8 @@ export default {
       },
       fontFamily: {
         serif: ["Playfair Display", "Georgia", "serif"],
-        sans: ["Inter", "system-ui", "sans-serif"],
-        arabic: ["Noto Sans Arabic", "Tahoma", "sans-serif"],
+        sans: ["Century Gothic", "CenturyGothic", "AppleGothic", "Inter", "system-ui", "sans-serif"],
+        arabic: ["Ge Flow", "GeFlow", "Noto Sans Arabic", "Tahoma", "sans-serif"],
       },
       fontSize: {
         "display": ["clamp(2.5rem, 6vw, 5rem)", { lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "500" }],

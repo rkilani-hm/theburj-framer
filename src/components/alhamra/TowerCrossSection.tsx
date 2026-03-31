@@ -139,8 +139,8 @@ const TowerCrossSection = () => {
                 <stop offset="100%" stopColor="hsl(var(--charcoal-800))" />
               </linearGradient>
               <linearGradient id="glassGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="hsl(217, 91%, 60%)" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="hsl(217, 91%, 40%)" stopOpacity="0.2" />
+                <stop offset="0%" stopColor="hsl(359, 65%, 55%)" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="hsl(359, 80%, 35%)" stopOpacity="0.2" />
               </linearGradient>
             </defs>
 
@@ -177,8 +177,8 @@ const TowerCrossSection = () => {
                     y2={yPos}
                     stroke={
                       marker.type === "substation"
-                        ? "hsl(45, 93%, 47%)"
-                        : "hsl(142, 76%, 36%)"
+                        ? "hsl(359, 80%, 45%)"
+                        : "hsl(0, 0%, 45%)"
                     }
                     strokeWidth={isActive || isHovered ? 3 : 2}
                     strokeDasharray={marker.type === "refuge" ? "6 3" : "none"}
@@ -195,8 +195,8 @@ const TowerCrossSection = () => {
                     r={isActive || isHovered ? 10 : 8}
                     fill={
                       marker.type === "substation"
-                        ? "hsl(45, 93%, 47%)"
-                        : "hsl(142, 76%, 36%)"
+                        ? "hsl(359, 80%, 45%)"
+                        : "hsl(0, 0%, 45%)"
                     }
                     stroke="white"
                     strokeWidth="2"

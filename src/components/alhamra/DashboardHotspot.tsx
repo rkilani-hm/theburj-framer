@@ -42,7 +42,7 @@ const DashboardHotspot = ({
           animate={{ scale: 1 }}
           transition={{ duration: 0.3, delay: delay * 0.15 + 0.3 }}
         >
-          <div className="w-3 h-3 rounded-full bg-sky-500 shadow-[0_0_12px_rgba(14,165,233,0.8)]" />
+          <div className="w-3 h-3 rounded-full bg-primary shadow-[0_0_12px_rgba(205,23,25,0.7)]" />
           <div className="absolute inset-0 w-3 h-3 rounded-full bg-sky-400 animate-ping opacity-75" />
         </motion.div>
 
@@ -55,7 +55,7 @@ const DashboardHotspot = ({
           style={{ transformOrigin: adjustedSide === "left" ? "right" : "left" }}
         >
           <div 
-            className={`w-20 h-px ${adjustedSide === "left" ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-sky-500 to-sky-300`}
+            className={`w-20 h-px ${adjustedSide === "left" ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-primary to-primary/50`}
           />
         </motion.div>
 
@@ -64,7 +64,7 @@ const DashboardHotspot = ({
           onClick={onClick}
           className="relative px-4 py-2.5 bg-white/90 backdrop-blur-xl border border-sky-400/50 rounded-lg
                      shadow-lg shadow-sky-100/50 hover:shadow-xl hover:shadow-sky-200/50
-                     hover:border-sky-500 hover:bg-white cursor-pointer
+                     hover:border-primary hover:bg-white cursor-pointer
                      transition-all duration-300 group"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -73,10 +73,10 @@ const DashboardHotspot = ({
           whileTap={{ scale: 0.98 }}
         >
           {/* Corner accents */}
-          <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-sky-500 rounded-tl-lg group-hover:w-3 group-hover:h-3 transition-all" />
-          <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-sky-500 rounded-tr-lg group-hover:w-3 group-hover:h-3 transition-all" />
-          <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-sky-500 rounded-bl-lg group-hover:w-3 group-hover:h-3 transition-all" />
-          <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-sky-500 rounded-br-lg group-hover:w-3 group-hover:h-3 transition-all" />
+          <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-primary rounded-tl-lg group-hover:w-3 group-hover:h-3 transition-all" />
+          <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-primary rounded-tr-lg group-hover:w-3 group-hover:h-3 transition-all" />
+          <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-primary rounded-bl-lg group-hover:w-3 group-hover:h-3 transition-all" />
+          <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary rounded-br-lg group-hover:w-3 group-hover:h-3 transition-all" />
 
           <div className={`${isRTL ? "text-right" : "text-left"}`}>
             <p className="text-sm font-mono font-bold text-slate-800 tracking-wide whitespace-nowrap group-hover:text-sky-700 transition-colors">

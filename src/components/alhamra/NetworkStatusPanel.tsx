@@ -51,14 +51,14 @@ const NetworkStatusPanel = ({ language }: NetworkStatusPanelProps) => {
     >
       <div className="relative bg-white/70 backdrop-blur-xl border border-slate-200 shadow-lg shadow-slate-200/50 p-4 lg:p-5 rounded-lg">
         {/* Corner decorations */}
-        <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-sky-500 rounded-tl-lg" />
-        <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-sky-500 rounded-tr-lg" />
-        <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-sky-500 rounded-bl-lg" />
-        <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-sky-500 rounded-br-lg" />
+        <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-primary rounded-tl-lg" />
+        <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-primary rounded-tr-lg" />
+        <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-primary rounded-bl-lg" />
+        <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-primary rounded-br-lg" />
 
         {/* Header */}
         <div className="flex items-center gap-2 mb-4">
-          <div className="w-2 h-2 rounded-full bg-sky-500 animate-pulse shadow-[0_0_8px_rgba(14,165,233,0.8)]" />
+          <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(205,23,25,0.7)]" />
           <h3 className="text-xs font-mono font-bold text-sky-600 tracking-wider">
             {labels.title[language]}
           </h3>

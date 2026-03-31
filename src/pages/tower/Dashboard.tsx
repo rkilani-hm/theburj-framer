@@ -115,7 +115,7 @@ const Dashboard = () => {
         <h1 className="text-sm md:text-lg lg:text-xl font-mono uppercase tracking-[0.2em] md:tracking-[0.3em] text-slate-700">
           {language === "en" ? "TECHNICAL DASHBOARD" : "لوحة التحكم الفنية"}
         </h1>
-        <div className="h-px w-24 md:w-32 mx-auto mt-2 bg-gradient-to-r from-transparent via-sky-500 to-transparent" />
+        <div className="h-px w-24 md:w-32 mx-auto mt-2 bg-gradient-to-r from-transparent via-primary to-transparent" />
       </motion.div>
 
       {/* Subtle grid overlay for HUD effect */}
@@ -123,8 +123,8 @@ const Dashboard = () => {
         className="absolute inset-0 pointer-events-none z-5 opacity-[0.02]"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(0,120,180,0.08) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0,120,180,0.08) 1px, transparent 1px)
+            linear-gradient(rgba(205,23,25,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(205,23,25,0.06) 1px, transparent 1px)
           `,
           backgroundSize: "50px 50px",
         }}
@@ -158,7 +158,7 @@ const Dashboard = () => {
               whileTap={{ scale: 0.98 }}
             >
               <div className="flex items-center gap-3">
-                <div className="w-2.5 h-2.5 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.8)]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_8px_rgba(205,23,25,0.7)]" />
                 <div className="text-left">
                   <p className="text-sm font-mono font-bold text-slate-800">
                     {hotspot.title[language]}
@@ -170,7 +170,7 @@ const Dashboard = () => {
                   )}
                 </div>
               </div>
-              <svg className="w-5 h-5 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </motion.button>

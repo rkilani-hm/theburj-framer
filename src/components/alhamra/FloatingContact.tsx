@@ -22,7 +22,7 @@ const FloatingContact = () => {
       label: t("contact.email"),
       value: "info@alhamra.com.kw",
       href: "mailto:info@alhamra.com.kw",
-      color: "bg-sky-500 hover:bg-sky-600",
+      color: "bg-primary hover:bg-alhamra-red-dark",
     },
     {
       icon: MapPin,
