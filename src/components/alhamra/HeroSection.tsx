@@ -27,17 +27,17 @@ const HeroSection = () => {
   });
 
   /*
-    Images use bottom:0 positioning = bottom edge of container.
-    translateY(100%) = pushed entirely below container (clipped by overflow:hidden).
-    On scroll → translateY moves negative = rises upward into view.
-    
-    End values: negative enough to reach the text area (center of viewport).
-    An image ~400px tall needs about -250% to go from bottom edge to center.
+    Section is 350vh → sticky frame pins for 250vh of scrolling.
+    That's a LOT of scroll = text stays visible for a long time.
+
+    Images start hidden (100%), don't begin entering until ~20% scroll,
+    slowly rise through text, fully overlap by ~80% scroll.
+    Last 20% = images covering text, then section ends → About appears.
   */
-  const imgY1 = useTransform(scrollYProgress, [0, 1], ["100%",  "-220%"]);
-  const imgY2 = useTransform(scrollYProgress, [0, 1], ["100%",  "-250%"]);
-  const imgY3 = useTransform(scrollYProgress, [0, 1], ["100%",  "-200%"]);
-  const imgY4 = useTransform(scrollYProgress, [0, 1], ["100%",  "-240%"]);
+  const imgY1 = useTransform(scrollYProgress, [0.15, 0.85], ["100%",  "-200%"]);
+  const imgY2 = useTransform(scrollYProgress, [0.2,  0.9 ], ["100%",  "-220%"]);
+  const imgY3 = useTransform(scrollYProgress, [0.18, 0.88], ["100%",  "-180%"]);
+  const imgY4 = useTransform(scrollYProgress, [0.22, 0.85], ["100%",  "-210%"]);
 
   const indicatorOpacity = useTransform(scrollYProgress, [0, 0.08], [1, 0]);
 
@@ -60,7 +60,7 @@ const HeroSection = () => {
     <section
       ref={sectionRef}
       className="relative"
-      style={{ height: "200vh", backgroundColor: "#FFFFFF" }}
+      style={{ height: "350vh", backgroundColor: "#FFFFFF" }}
     >
       <div
         className="sticky top-0 h-screen flex items-center overflow-hidden"
