@@ -10,17 +10,13 @@ import towerFacadeDetail from "@/assets/tower-facade-detail.jpg";
 /*
   Crestline Hero Scroll Effect
   ─────────────────────────────
-  Frame 1 (top): Full-screen text only. Solid black on white.
-  Frame 2 (scrolling): Images glide UP from below into the text area.
-  Frame 3 (overlap): Images sit BEHIND text. Where they overlap,
-    text becomes transparent outlines showing images through letterforms.
+  CRITICAL: Hero bg must be pure #FFFFFF (not brand #EDEDED)
+  because difference(white_text, white_bg) = black text.
+  On #EDEDED it produces faint grey = invisible.
 
-  Technique: Text is color:white + mix-blend-mode:difference.
-    - Over white bg: difference(white,white) = black → normal text ✓
-    - Over images: difference(white,img) = inverted → transparent outlines ✓
-
-  DOM order: Images FIRST (paint first), Text SECOND (paints on top with blend).
-  No z-index on text — blend mode works across the flat stacking context.
+  Section is 250vh → gives long scroll runway.
+  Images use full [0, 1] scroll range → slow smooth glide.
+  Text is sticky and stays until images have fully passed through.
 */
 
 const HeroSection = () => {
@@ -32,14 +28,15 @@ const HeroSection = () => {
     offset: ["start start", "end start"],
   });
 
-  // Images: start fully below viewport, glide up into text zone
-  const imgY1 = useTransform(scrollYProgress, [0, 0.7], ["100%", "-20%"]);
-  const imgY2 = useTransform(scrollYProgress, [0, 0.7], ["115%", "-10%"]);
-  const imgY3 = useTransform(scrollYProgress, [0, 0.7], ["125%", "-25%"]);
-  const imgY4 = useTransform(scrollYProgress, [0, 0.7], ["110%", "-15%"]);
+  // Images: slow parallax over the FULL scroll range
+  // Start well below (90-110%), end above text (-30 to -50%)
+  const imgY1 = useTransform(scrollYProgress, [0, 1], ["90%",  "-35%"]);
+  const imgY2 = useTransform(scrollYProgress, [0, 1], ["105%", "-25%"]);
+  const imgY3 = useTransform(scrollYProgress, [0, 1], ["110%", "-40%"]);
+  const imgY4 = useTransform(scrollYProgress, [0, 1], ["95%",  "-30%"]);
 
-  // Scroll indicator fades out
-  const indicatorOpacity = useTransform(scrollYProgress, [0, 0.08], [1, 0]);
+  // Scroll indicator fades out early
+  const indicatorOpacity = useTransform(scrollYProgress, [0, 0.06], [1, 0]);
 
   const lines =
     language === "en"
@@ -59,21 +56,24 @@ const HeroSection = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative bg-background"
-      style={{ height: "180vh" }}
+      className="relative"
+      style={{
+        height: "250vh",
+        /* MUST be pure white for difference blend to produce black text */
+        backgroundColor: "#FFFFFF",
+      }}
     >
-      {/* Sticky frame — pins to viewport while section scrolls */}
+      {/* Sticky frame — pins for the entire 250vh scroll */}
       <div className="sticky top-0 h-screen flex items-center overflow-hidden">
-        {/* 
-          CRITICAL: No isolation on this container.
-          Images and text are siblings in a flat stacking context
-          so mix-blend-mode on text blends with images below.
+        {/*
+          Flat stacking context — no z-index anywhere.
+          DOM order: images first (behind), text second (on top with blend).
         */}
-        <div className="container mx-auto px-4 lg:px-12 relative w-full">
+        <div className="container mx-auto px-4 lg:px-12 relative w-full h-full">
 
           {/* ── IMAGES (paint first in DOM → behind text) ── */}
 
-          {/* Image 1 — left side, overlaps lines 3-4 area */}
+          {/* Image 1 — left side */}
           <motion.div
             style={{ y: imgY1 }}
             className="absolute top-[10%] left-[2%] lg:left-[5%] w-[38%] lg:w-[24%]"
@@ -117,7 +117,7 @@ const HeroSection = () => {
             </motion.div>
           </motion.div>
 
-          {/* Image 3 — center-right, larger */}
+          {/* Image 3 — center-right */}
           <motion.div
             style={{ y: imgY3 }}
             className="absolute top-[15%] right-[12%] lg:right-[20%] w-[35%] lg:w-[22%]"
@@ -139,7 +139,7 @@ const HeroSection = () => {
             </motion.div>
           </motion.div>
 
-          {/* Image 4 — far right, partially off-screen */}
+          {/* Image 4 — far right edge */}
           <motion.div
             style={{ y: imgY4 }}
             className="absolute top-[0%] right-[-3%] lg:right-[0%] w-[30%] lg:w-[20%]"
@@ -161,13 +161,12 @@ const HeroSection = () => {
             </motion.div>
           </motion.div>
 
-          {/* ── TEXT (paints AFTER images in DOM → visually on top) ──
-              Absolutely positioned + centered so it stays locked in place
-              while images glide through it on scroll.
-              mix-blend-mode:difference + color:white
-              makes text look black on white bg but transparent on images */}
+          {/* ── TEXT (paints AFTER images → on top with blend) ──
+              Pinned to center of viewport.
+              color:white + difference on white bg = black text.
+              Over images = transparent outlines. */}
           <div className="absolute inset-0 flex items-center pointer-events-none select-none">
-            <div className="container mx-auto px-4 lg:px-12">
+            <div className="w-full px-4 lg:px-0">
               <h1
                 className="hero-blend-text font-sans font-medium uppercase leading-[1.05] tracking-[-0.02em] whitespace-pre-wrap"
                 style={{ fontSize: "clamp(2rem, 6.5vw, 6.5rem)" }}
@@ -195,7 +194,7 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll indicator — bottom center */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
