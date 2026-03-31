@@ -180,7 +180,7 @@ const Header = () => {
     hidden: { opacity: 0, y: 40, skewY: 2 },
     visible: {
       opacity: 1, y: 0, skewY: 0,
-      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
     },
     exit: {
       opacity: 0, y: -20,
