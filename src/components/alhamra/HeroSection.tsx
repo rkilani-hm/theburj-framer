@@ -1,6 +1,6 @@
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 
 import towerLowangle from "@/assets/tower-lowangle-clouds.png";
 import somTowerDetail from "@/assets/som-tower-detail.jpg";
@@ -8,32 +8,42 @@ import interiorLobby from "@/assets/interior-lobby.jpg";
 import towerFacadeDetail from "@/assets/tower-facade-detail.jpg";
 
 /*
-  Crestline Hero Scroll Effect — FINAL
-  ─────────────────────────────────────
-  - Text pinned center, solid black, always visible
-  - Images start BELOW viewport (bottom:0 + translateY:100% = hidden)
-  - On scroll, images float upward under the text
-  - Blend makes text transparent where images overlap
-  - NO images visible on first load
+  Crestline Hero — container = 1.5× text height
+  ───────────────────────────────────────────────
+  Measures the h1 text block, sets sticky frame to 1.5× that height.
+  Section height = 3.5× container → gives long scroll runway.
+  Images start below, float up through pinned text on scroll.
 */
 
 const HeroSection = () => {
   const { language } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
+  const textRef = useRef<HTMLHeadingElement>(null);
+  const [containerH, setContainerH] = useState<number>(0);
+
+  // Measure text height → container = 1.5× text, section = 3.5× container
+  const measure = useCallback(() => {
+    if (textRef.current) {
+      const textH = textRef.current.getBoundingClientRect().height;
+      setContainerH(Math.round(textH * 1.5));
+    }
+  }, []);
+
+  useEffect(() => {
+    // Measure after fonts load + initial render
+    measure();
+    window.addEventListener("resize", measure);
+    // Re-measure after fonts potentially load
+    document.fonts?.ready?.then(measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [measure, language]);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"],
   });
 
-  /*
-    Section is 350vh → sticky frame pins for 250vh of scrolling.
-    That's a LOT of scroll = text stays visible for a long time.
-
-    Images start hidden (100%), don't begin entering until ~20% scroll,
-    slowly rise through text, fully overlap by ~80% scroll.
-    Last 20% = images covering text, then section ends → About appears.
-  */
+  // Images: staggered entry, float up through text
   const imgY1 = useTransform(scrollYProgress, [0.15, 0.85], ["100%",  "-200%"]);
   const imgY2 = useTransform(scrollYProgress, [0.2,  0.9 ], ["100%",  "-220%"]);
   const imgY3 = useTransform(scrollYProgress, [0.18, 0.88], ["100%",  "-180%"]);
@@ -56,22 +66,30 @@ const HeroSection = () => {
           "تبدأ هنا.",
         ];
 
+  // Section = 3.5× container for enough scroll runway, min 300vh
+  const sectionH = containerH > 0 ? Math.max(containerH * 3.5, window.innerHeight * 3) : "350vh";
+
   return (
     <section
       ref={sectionRef}
       className="relative"
-      style={{ height: "350vh", backgroundColor: "#FFFFFF" }}
+      style={{
+        height: typeof sectionH === "number" ? `${sectionH}px` : sectionH,
+        backgroundColor: "#FFFFFF",
+      }}
     >
+      {/* Sticky frame — height = 1.5× text height (or fallback 80vh) */}
       <div
-        className="sticky top-0 h-screen flex items-center overflow-hidden"
-        style={{ backgroundColor: "#FFFFFF" }}
+        className="sticky top-0 flex items-center justify-center overflow-hidden"
+        style={{
+          height: containerH > 0 ? `${containerH}px` : "80vh",
+          backgroundColor: "#FFFFFF",
+        }}
       >
-        <div className="container mx-auto px-4 lg:px-12 relative w-full h-full">
+        <div className="container mx-auto px-4 lg:px-12 relative w-full" style={{ height: containerH > 0 ? `${containerH}px` : "auto" }}>
 
-          {/* ── IMAGES ──
-              All use bottom:0 = anchored to container bottom edge.
-              translateY(100%) on load = pushed entirely below = INVISIBLE.
-              Scroll drives them upward into the text zone. */}
+          {/* ── IMAGES (DOM first → paint behind text) ──
+              bottom:0 + translateY(100%) = hidden below frame on load */}
 
           <motion.div
             style={{ y: imgY1 }}
@@ -113,6 +131,7 @@ const HeroSection = () => {
           <div className="absolute inset-0 flex items-center pointer-events-none select-none">
             <div className="w-full px-4 lg:px-0">
               <h1
+                ref={textRef}
                 className="hero-blend-text font-sans font-medium uppercase leading-[1.05] tracking-[-0.02em] whitespace-pre-wrap"
                 style={{ fontSize: "clamp(2rem, 6.5vw, 6.5rem)" }}
               >
