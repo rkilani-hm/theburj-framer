@@ -112,7 +112,7 @@ const Home = () => {
         <HeroSection />
 
         {/* ─── ABOUT Section ─── */}
-        <section className="py-24 lg:py-36 bg-background">
+        <section className="py-16 lg:py-20 bg-background">
           <div className="container mx-auto px-6 lg:px-12">
             <div ref={aboutRef} className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
               {/* Text */}
@@ -167,7 +167,7 @@ const Home = () => {
         </section>
 
         {/* ─── SERVICES Section — Accordion with expanding image ─── */}
-        <section className="py-24 lg:py-36 bg-background border-t border-border">
+        <section className="py-16 lg:py-20 bg-background border-t border-border">
           <div className="container mx-auto px-6 lg:px-12">
             <motion.div
               ref={servicesRef}
@@ -197,7 +197,7 @@ const Home = () => {
 
         {/* ─── Stats Bar — Animated counting numbers ─── */}
         <section className="bg-foreground overflow-hidden">
-          <div ref={statsRef} className="container mx-auto px-6 lg:px-12 py-16 lg:py-24">
+          <div ref={statsRef} className="container mx-auto px-6 lg:px-12 py-14 lg:py-18">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16">
               {stats.map((stat, index) => (
                 <AnimatedStat key={index} stat={stat} index={index} isInView={statsInView} />

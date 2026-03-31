@@ -62,7 +62,7 @@ const HomePageLinks = () => {
   ];
 
   return (
-    <section className="py-24 lg:py-36 bg-background">
+    <section className="py-16 lg:py-20 bg-background">
       <div className="container mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <motion.div

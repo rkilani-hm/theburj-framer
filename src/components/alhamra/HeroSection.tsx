@@ -10,13 +10,14 @@ import towerFacadeDetail from "@/assets/tower-facade-detail.jpg";
 /*
   Crestline Hero Scroll Effect
   ─────────────────────────────
-  CRITICAL: Hero bg must be pure #FFFFFF (not brand #EDEDED)
-  because difference(white_text, white_bg) = black text.
-  On #EDEDED it produces faint grey = invisible.
+  1. Page loads: TEXT ONLY. Black text, white bg. No images visible.
+  2. User scrolls: Images float up from below into the text zone.
+  3. Images go UNDER the text. Where they overlap, text becomes
+     transparent outlines (via mix-blend-mode: difference).
+  4. Text stays pinned. Never moves.
 
-  Section is 250vh → gives long scroll runway.
-  Images use full [0, 1] scroll range → slow smooth glide.
-  Text is sticky and stays until images have fully passed through.
+  Key: Images start at translateY(150%+) — completely off-screen below.
+       No clip-path on load — images are simply below the viewport.
 */
 
 const HeroSection = () => {
@@ -28,14 +29,13 @@ const HeroSection = () => {
     offset: ["start start", "end start"],
   });
 
-  // Images: slow parallax over the FULL scroll range
-  // Start well below (90-110%), end above text (-30 to -50%)
-  const imgY1 = useTransform(scrollYProgress, [0, 1], ["90%",  "-35%"]);
-  const imgY2 = useTransform(scrollYProgress, [0, 1], ["105%", "-25%"]);
-  const imgY3 = useTransform(scrollYProgress, [0, 1], ["110%", "-40%"]);
-  const imgY4 = useTransform(scrollYProgress, [0, 1], ["95%",  "-30%"]);
+  // Images: start FAR below (150%+), slowly rise to overlap text
+  const imgY1 = useTransform(scrollYProgress, [0, 1], ["150%", "-30%"]);
+  const imgY2 = useTransform(scrollYProgress, [0, 1], ["160%", "-20%"]);
+  const imgY3 = useTransform(scrollYProgress, [0, 1], ["170%", "-35%"]);
+  const imgY4 = useTransform(scrollYProgress, [0, 1], ["155%", "-25%"]);
 
-  // Scroll indicator fades out early
+  // Scroll indicator fades out
   const indicatorOpacity = useTransform(scrollYProgress, [0, 0.06], [1, 0]);
 
   const lines =
@@ -57,114 +57,77 @@ const HeroSection = () => {
     <section
       ref={sectionRef}
       className="relative"
-      style={{ height: "250vh" }}
+      style={{ height: "200vh" }}
     >
-      {/* Sticky frame — white bg MUST be here (not on section)
-          because position:sticky creates an isolated stacking context.
-          mix-blend-mode on text can only blend within this context. */}
+      {/* Sticky frame — white bg for blend math */}
       <div
         className="sticky top-0 h-screen flex items-center overflow-hidden"
         style={{ backgroundColor: "#FFFFFF" }}
       >
-        {/*
-          Flat stacking context — no z-index anywhere.
-          DOM order: images first (behind), text second (on top with blend).
-        */}
         <div className="container mx-auto px-4 lg:px-12 relative w-full h-full">
 
-          {/* ── IMAGES (paint first in DOM → behind text) ── */}
+          {/* ── IMAGES (DOM first → paint behind text) ──
+              All start at translateY 150%+ so completely invisible on load.
+              No clip-path animation — purely scroll-driven entrance. */}
 
-          {/* Image 1 — left side */}
+          {/* Image 1 — left */}
           <motion.div
             style={{ y: imgY1 }}
-            className="absolute top-[10%] left-[2%] lg:left-[5%] w-[38%] lg:w-[24%]"
+            className="absolute top-[5%] left-[2%] lg:left-[5%] w-[38%] lg:w-[24%]"
           >
-            <motion.div
-              initial={{ clipPath: "inset(100% 0 0 0)", opacity: 0 }}
-              animate={{ clipPath: "inset(0% 0 0 0)", opacity: 1 }}
-              transition={{ duration: 1.3, delay: 0.7, ease: [0.76, 0, 0.24, 1] }}
-              className="aspect-[3/4] overflow-hidden"
-            >
-              <motion.img
+            <div className="aspect-[3/4] overflow-hidden">
+              <img
                 src={towerLowangle}
                 alt="Al Hamra Tower"
                 className="w-full h-full object-cover"
-                initial={{ scale: 1.15 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 2, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
               />
-            </motion.div>
+            </div>
           </motion.div>
 
-          {/* Image 2 — center-left, taller */}
+          {/* Image 2 — center-left */}
           <motion.div
             style={{ y: imgY2 }}
-            className="absolute top-[5%] left-[18%] lg:left-[22%] w-[28%] lg:w-[18%]"
+            className="absolute top-[0%] left-[18%] lg:left-[22%] w-[28%] lg:w-[18%]"
           >
-            <motion.div
-              initial={{ clipPath: "inset(100% 0 0 0)", opacity: 0 }}
-              animate={{ clipPath: "inset(0% 0 0 0)", opacity: 1 }}
-              transition={{ duration: 1.3, delay: 0.85, ease: [0.76, 0, 0.24, 1] }}
-              className="aspect-[3/5] overflow-hidden"
-            >
-              <motion.img
+            <div className="aspect-[3/5] overflow-hidden">
+              <img
                 src={interiorLobby}
                 alt="Tower interior"
                 className="w-full h-full object-cover"
-                initial={{ scale: 1.15 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 2, delay: 0.85, ease: [0.16, 1, 0.3, 1] }}
               />
-            </motion.div>
+            </div>
           </motion.div>
 
           {/* Image 3 — center-right */}
           <motion.div
             style={{ y: imgY3 }}
-            className="absolute top-[15%] right-[12%] lg:right-[20%] w-[35%] lg:w-[22%]"
+            className="absolute top-[10%] right-[12%] lg:right-[20%] w-[35%] lg:w-[22%]"
           >
-            <motion.div
-              initial={{ clipPath: "inset(100% 0 0 0)", opacity: 0 }}
-              animate={{ clipPath: "inset(0% 0 0 0)", opacity: 1 }}
-              transition={{ duration: 1.4, delay: 0.8, ease: [0.76, 0, 0.24, 1] }}
-              className="aspect-[3/4] overflow-hidden"
-            >
-              <motion.img
+            <div className="aspect-[3/4] overflow-hidden">
+              <img
                 src={somTowerDetail}
                 alt="Tower facade"
                 className="w-full h-full object-cover"
-                initial={{ scale: 1.15 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 2.2, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
               />
-            </motion.div>
+            </div>
           </motion.div>
 
-          {/* Image 4 — far right edge */}
+          {/* Image 4 — far right */}
           <motion.div
             style={{ y: imgY4 }}
-            className="absolute top-[0%] right-[-3%] lg:right-[0%] w-[30%] lg:w-[20%]"
+            className="absolute top-[-5%] right-[-3%] lg:right-[0%] w-[30%] lg:w-[20%]"
           >
-            <motion.div
-              initial={{ clipPath: "inset(100% 0 0 0)", opacity: 0 }}
-              animate={{ clipPath: "inset(0% 0 0 0)", opacity: 1 }}
-              transition={{ duration: 1.2, delay: 0.95, ease: [0.76, 0, 0.24, 1] }}
-              className="aspect-[3/4] overflow-hidden"
-            >
-              <motion.img
+            <div className="aspect-[3/4] overflow-hidden">
+              <img
                 src={towerFacadeDetail}
                 alt="Architectural detail"
                 className="w-full h-full object-cover"
-                initial={{ scale: 1.15 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 1.8, delay: 0.95, ease: [0.16, 1, 0.3, 1] }}
               />
-            </motion.div>
+            </div>
           </motion.div>
 
-          {/* ── TEXT (paints AFTER images → on top with blend) ──
-              STAYS PINNED. Never moves. Images glide up behind it.
-              Blend handles color: black on white bg, transparent on images. */}
+          {/* ── TEXT (DOM second → paints on top with blend) ──
+              Pinned center. Never moves. */}
           <div className="absolute inset-0 flex items-center pointer-events-none select-none">
             <div className="w-full px-4 lg:px-0">
               <h1
@@ -194,7 +157,7 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Scroll indicator — bottom center */}
+      {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
