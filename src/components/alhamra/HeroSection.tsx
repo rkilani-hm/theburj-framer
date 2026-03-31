@@ -162,30 +162,34 @@ const HeroSection = () => {
           </motion.div>
 
           {/* ── TEXT (paints AFTER images in DOM → visually on top) ──
+              Absolutely positioned + centered so it stays locked in place
+              while images glide through it on scroll.
               mix-blend-mode:difference + color:white
               makes text look black on white bg but transparent on images */}
-          <div className="relative pointer-events-none select-none">
-            <h1
-              className="hero-blend-text font-sans font-medium uppercase leading-[1.05] tracking-[-0.02em] whitespace-pre-wrap"
-              style={{ fontSize: "clamp(2rem, 6.5vw, 6.5rem)" }}
-            >
-              {lines.map((line, lineIndex) => (
-                <span key={lineIndex} className="block overflow-hidden">
-                  <motion.span
-                    initial={{ y: "100%" }}
-                    animate={{ y: "0%" }}
-                    transition={{
-                      duration: 1,
-                      delay: 0.15 + lineIndex * 0.1,
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
-                    className="block"
-                  >
-                    {line}
-                  </motion.span>
-                </span>
-              ))}
-            </h1>
+          <div className="absolute inset-0 flex items-center pointer-events-none select-none">
+            <div className="container mx-auto px-4 lg:px-12">
+              <h1
+                className="hero-blend-text font-sans font-medium uppercase leading-[1.05] tracking-[-0.02em] whitespace-pre-wrap"
+                style={{ fontSize: "clamp(2rem, 6.5vw, 6.5rem)" }}
+              >
+                {lines.map((line, lineIndex) => (
+                  <span key={lineIndex} className="block overflow-hidden">
+                    <motion.span
+                      initial={{ y: "100%" }}
+                      animate={{ y: "0%" }}
+                      transition={{
+                        duration: 1,
+                        delay: 0.15 + lineIndex * 0.1,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
+                      className="block"
+                    >
+                      {line}
+                    </motion.span>
+                  </span>
+                ))}
+              </h1>
+            </div>
           </div>
 
         </div>
