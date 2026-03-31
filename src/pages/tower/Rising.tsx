@@ -98,28 +98,23 @@ const sections: RisingSection[] = [
 const Rising = () => {
   const { language } = useLanguage();
   const [activeIndex, setActiveIndex] = useState(0);
-  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Observe which section is in view
+  // Scroll-driven active section tracking for sticky container
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const idx = sectionRefs.current.indexOf(entry.target as HTMLDivElement);
-            if (idx !== -1) setActiveIndex(idx);
-          }
-        });
-      },
-      { rootMargin: "-40% 0px -40% 0px", threshold: 0 }
-    );
-
-    sectionRefs.current.forEach((ref) => {
-      if (ref) observer.observe(ref);
-    });
-
-    return () => observer.disconnect();
+    const handleScroll = () => {
+      const container = containerRef.current;
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      const containerHeight = container.offsetHeight;
+      const scrolled = -rect.top;
+      if (scrolled < 0) { setActiveIndex(0); return; }
+      const progress = Math.min(scrolled / (containerHeight - window.innerHeight), 1);
+      const idx = Math.min(Math.floor(progress * sections.length), sections.length - 1);
+      setActiveIndex(idx);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const { ref: heroRef, isInView: heroInView } = useScrollReveal();
@@ -186,100 +181,126 @@ const Rising = () => {
           </div>
         </section>
 
-        {/* ===== CRESTLINE-STYLE SCROLL SERVICES SECTION ===== */}
-        <section className="bg-background border-t border-border" ref={containerRef}>
-          <div className="container mx-auto px-6 lg:px-12">
-            {/* Section header */}
-            <div className="py-16 lg:py-20">
-              <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-6 block">
-                {language === "en" ? "THE JOURNEY" : "الرحلة"}
-              </span>
-              <p className="text-base text-muted-foreground max-w-2xl leading-relaxed">
-                {language === "en"
-                  ? "Seven chapters define the rise of Kuwait's most significant architectural achievement — from heritage roots through construction to global recognition."
-                  : "سبعة فصول تحدد صعود أهم إنجاز معماري في الكويت — من الجذور التراثية عبر البناء إلى الاعتراف العالمي."}
-              </p>
-            </div>
+        {/* ===== PREMIUM STICKY SCROLL JOURNEY ===== */}
+        <section className="bg-background border-t border-border">
+          {/* Section header */}
+          <div className="container mx-auto px-6 lg:px-12 py-16 lg:py-20">
+            <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-6 block">
+              {language === "en" ? "THE JOURNEY" : "الرحلة"}
+            </span>
+            <p className="text-base text-muted-foreground max-w-2xl leading-relaxed">
+              {language === "en"
+                ? "Seven chapters define the rise of Kuwait's most significant architectural achievement — from heritage roots through construction to global recognition."
+                : "سبعة فصول تحدد صعود أهم إنجاز معماري في الكويت — من الجذور التراثية عبر البناء إلى الاعتراف العالمي."}
+            </p>
+          </div>
 
-            {/* Scroll-driven content: Left titles + Right image/description */}
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
-              {/* LEFT: Large text labels */}
-              <div className="space-y-0">
-                {sections.map((section, index) => (
-                  <div
-                    key={section.id}
-                    ref={(el) => { sectionRefs.current[index] = el; }}
-                    className="py-12 lg:py-20 border-t border-border first:border-t-0 cursor-pointer"
-                    onClick={() => {
-                      setActiveIndex(index);
-                      sectionRefs.current[index]?.scrollIntoView({ behavior: "smooth", block: "center" });
-                    }}
-                  >
-                    <motion.h3
-                      className={`text-[clamp(1.8rem,3.5vw,3.5rem)] font-sans font-medium uppercase leading-[1.1] tracking-[-0.01em] whitespace-pre-line transition-colors duration-500 ${
-                        activeIndex === index
-                          ? "text-foreground"
-                          : "text-muted-foreground/30"
-                      }`}
+          {/* Sticky scroll container */}
+          <div ref={containerRef} className="hidden lg:block relative" style={{ height: `${sections.length * 100}vh` }}>
+            <div className="sticky top-0 h-screen flex">
+              {/* LEFT 40% — Compact nav */}
+              <div className="w-[40%] flex flex-col justify-center px-12 xl:px-16">
+                <div className="flex flex-col gap-2">
+                  {sections.map((section, index) => (
+                    <button
+                      key={section.id}
+                      onClick={() => {
+                        const sectionProgress = index / sections.length;
+                        const containerEl = containerRef.current;
+                        if (containerEl) {
+                          const containerTop = containerEl.offsetTop;
+                          const containerHeight = containerEl.offsetHeight;
+                          const targetY = containerTop + containerHeight * sectionProgress;
+                          window.scrollTo({ top: targetY, behavior: "smooth" });
+                        }
+                      }}
+                      className="text-left group transition-all duration-500"
                     >
-                      {section.title[language]}
-                    </motion.h3>
-
-                    {/* Mobile: show description inline when active */}
-                    <AnimatePresence>
-                      {activeIndex === index && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.4 }}
-                          className="lg:hidden overflow-hidden"
-                        >
-                          <p className="text-sm text-muted-foreground leading-relaxed mt-6 max-w-md">
-                            {section.description[language]}
-                          </p>
-                          <div className="aspect-[16/10] overflow-hidden mt-6">
-                            <img
-                              src={section.image}
-                              alt={section.title.en}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                ))}
-              </div>
-
-              {/* RIGHT: Sticky image + description (desktop only) */}
-              <div className="hidden lg:block">
-                <div className="sticky top-32">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={activeIndex}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.4 }}
-                    >
-                      {/* Description */}
-                      <p className="text-sm text-muted-foreground leading-relaxed mb-8 max-w-md">
-                        {sections[activeIndex].description[language]}
-                      </p>
-
-                      {/* Image */}
-                      <div className="aspect-[4/3] overflow-hidden">
-                        <img
-                          src={sections[activeIndex].image}
-                          alt={sections[activeIndex].title.en}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    </motion.div>
-                  </AnimatePresence>
+                      <span
+                        className={`text-[18px] xl:text-[20px] font-sans font-medium uppercase tracking-[0.05em] leading-[1.2] whitespace-pre-line transition-colors duration-500 ${
+                          activeIndex === index
+                            ? "text-foreground"
+                            : "text-muted-foreground/25 group-hover:text-muted-foreground/50"
+                        }`}
+                      >
+                        {section.title[language].replace("\n", " ")}
+                      </span>
+                    </button>
+                  ))}
                 </div>
               </div>
+
+              {/* RIGHT 60% — Dynamic content */}
+              <div className="w-[60%] flex flex-col justify-center pr-12 xl:pr-16">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeIndex}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-6 max-w-lg">
+                      {sections[activeIndex].description[language]}
+                    </p>
+                    <div className="aspect-[16/10] overflow-hidden">
+                      <motion.img
+                        key={`img-${activeIndex}`}
+                        src={sections[activeIndex].image}
+                        alt={sections[activeIndex].title.en}
+                        className="w-full h-full object-cover"
+                        initial={{ scale: 1.08, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                      />
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile: accordion fallback */}
+          <div className="lg:hidden container mx-auto px-6 pb-16">
+            <div className="space-y-0 divide-y divide-border">
+              {sections.map((section, index) => (
+                <div key={section.id} className="py-6">
+                  <button
+                    onClick={() => setActiveIndex(activeIndex === index ? -1 : index)}
+                    className="w-full text-left"
+                  >
+                    <h3
+                      className={`text-lg font-sans font-medium uppercase tracking-wide transition-colors duration-300 ${
+                        activeIndex === index ? "text-foreground" : "text-muted-foreground/40"
+                      }`}
+                    >
+                      {section.title[language].replace("\n", " ")}
+                    </h3>
+                  </button>
+                  <AnimatePresence>
+                    {activeIndex === index && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.4 }}
+                        className="overflow-hidden"
+                      >
+                        <p className="text-sm text-muted-foreground leading-relaxed mt-4 mb-4 max-w-md">
+                          {section.description[language]}
+                        </p>
+                        <div className="aspect-[16/10] overflow-hidden">
+                          <img
+                            src={section.image}
+                            alt={section.title.en}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ))}
             </div>
           </div>
         </section>
