@@ -35,9 +35,9 @@ const HeroSection = () => {
   const imgY3 = useTransform(scrollYProgress, [0, 1], ["110%", "-40%"]);
   const imgY4 = useTransform(scrollYProgress, [0, 1], ["95%",  "-30%"]);
 
-  // Text: scrolls upward and fades out — vanishes behind images
-  const textY = useTransform(scrollYProgress, [0, 0.6], ["0%", "-60%"]);
-  const textOpacity = useTransform(scrollYProgress, [0.3, 0.6], [1, 0]);
+  // Text: scrolls upward aggressively — exits through the top of viewport
+  // Starts centered, ends well above screen. No opacity fade — physical exit.
+  const textY = useTransform(scrollYProgress, [0, 0.5], ["0%", "-120%"]);
 
   // Scroll indicator fades out early
   const indicatorOpacity = useTransform(scrollYProgress, [0, 0.06], [1, 0]);
@@ -169,7 +169,7 @@ const HeroSection = () => {
           {/* ── TEXT (paints AFTER images → on top with blend) ──
               Scrolls upward and fades out, vanishing behind images. */}
           <motion.div
-            style={{ y: textY, opacity: textOpacity }}
+            style={{ y: textY }}
             className="absolute inset-0 flex items-center pointer-events-none select-none"
           >
             <div className="w-full px-4 lg:px-0">
