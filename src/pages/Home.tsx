@@ -112,9 +112,9 @@ const Home = () => {
         <HeroSection />
 
         {/* ─── ABOUT Section ─── */}
-        <section className="py-16 lg:py-20 bg-background">
+        <section className="py-12 lg:py-16 bg-background">
           <div className="container mx-auto px-6 lg:px-12">
-            <div ref={aboutRef} className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+            <div ref={aboutRef} className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
               {/* Text */}
               <motion.div
                 initial="hidden"

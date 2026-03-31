@@ -8,16 +8,13 @@ import interiorLobby from "@/assets/interior-lobby.jpg";
 import towerFacadeDetail from "@/assets/tower-facade-detail.jpg";
 
 /*
-  Crestline Hero Scroll Effect
-  ─────────────────────────────
-  1. Page loads: TEXT ONLY. Black text, white bg. No images visible.
-  2. User scrolls: Images float up from below into the text zone.
-  3. Images go UNDER the text. Where they overlap, text becomes
-     transparent outlines (via mix-blend-mode: difference).
-  4. Text stays pinned. Never moves.
-
-  Key: Images start at translateY(150%+) — completely off-screen below.
-       No clip-path on load — images are simply below the viewport.
+  Crestline Hero Scroll Effect — FINAL
+  ─────────────────────────────────────
+  - Text pinned center, solid black, always visible
+  - Images start BELOW viewport (bottom:0 + translateY:100% = hidden)
+  - On scroll, images float upward under the text
+  - Blend makes text transparent where images overlap
+  - NO images visible on first load
 */
 
 const HeroSection = () => {
@@ -29,14 +26,20 @@ const HeroSection = () => {
     offset: ["start start", "end start"],
   });
 
-  // Images: start FAR below (150%+), slowly rise to overlap text
-  const imgY1 = useTransform(scrollYProgress, [0, 1], ["150%", "-30%"]);
-  const imgY2 = useTransform(scrollYProgress, [0, 1], ["160%", "-20%"]);
-  const imgY3 = useTransform(scrollYProgress, [0, 1], ["170%", "-35%"]);
-  const imgY4 = useTransform(scrollYProgress, [0, 1], ["155%", "-25%"]);
+  /*
+    Images use bottom:0 positioning = bottom edge of container.
+    translateY(100%) = pushed entirely below container (clipped by overflow:hidden).
+    On scroll → translateY moves negative = rises upward into view.
+    
+    End values: negative enough to reach the text area (center of viewport).
+    An image ~400px tall needs about -250% to go from bottom edge to center.
+  */
+  const imgY1 = useTransform(scrollYProgress, [0, 1], ["100%",  "-220%"]);
+  const imgY2 = useTransform(scrollYProgress, [0, 1], ["100%",  "-250%"]);
+  const imgY3 = useTransform(scrollYProgress, [0, 1], ["100%",  "-200%"]);
+  const imgY4 = useTransform(scrollYProgress, [0, 1], ["100%",  "-240%"]);
 
-  // Scroll indicator fades out
-  const indicatorOpacity = useTransform(scrollYProgress, [0, 0.06], [1, 0]);
+  const indicatorOpacity = useTransform(scrollYProgress, [0, 0.08], [1, 0]);
 
   const lines =
     language === "en"
@@ -57,77 +60,56 @@ const HeroSection = () => {
     <section
       ref={sectionRef}
       className="relative"
-      style={{ height: "200vh" }}
+      style={{ height: "200vh", backgroundColor: "#FFFFFF" }}
     >
-      {/* Sticky frame — white bg for blend math */}
       <div
         className="sticky top-0 h-screen flex items-center overflow-hidden"
         style={{ backgroundColor: "#FFFFFF" }}
       >
         <div className="container mx-auto px-4 lg:px-12 relative w-full h-full">
 
-          {/* ── IMAGES (DOM first → paint behind text) ──
-              All start at translateY 150%+ so completely invisible on load.
-              No clip-path animation — purely scroll-driven entrance. */}
+          {/* ── IMAGES ──
+              All use bottom:0 = anchored to container bottom edge.
+              translateY(100%) on load = pushed entirely below = INVISIBLE.
+              Scroll drives them upward into the text zone. */}
 
-          {/* Image 1 — left */}
           <motion.div
             style={{ y: imgY1 }}
-            className="absolute top-[5%] left-[2%] lg:left-[5%] w-[38%] lg:w-[24%]"
+            className="absolute bottom-0 left-[2%] lg:left-[5%] w-[38%] lg:w-[24%]"
           >
             <div className="aspect-[3/4] overflow-hidden">
-              <img
-                src={towerLowangle}
-                alt="Al Hamra Tower"
-                className="w-full h-full object-cover"
-              />
+              <img src={towerLowangle} alt="Al Hamra Tower" className="w-full h-full object-cover" />
             </div>
           </motion.div>
 
-          {/* Image 2 — center-left */}
           <motion.div
             style={{ y: imgY2 }}
-            className="absolute top-[0%] left-[18%] lg:left-[22%] w-[28%] lg:w-[18%]"
+            className="absolute bottom-0 left-[20%] lg:left-[24%] w-[28%] lg:w-[18%]"
           >
             <div className="aspect-[3/5] overflow-hidden">
-              <img
-                src={interiorLobby}
-                alt="Tower interior"
-                className="w-full h-full object-cover"
-              />
+              <img src={interiorLobby} alt="Tower interior" className="w-full h-full object-cover" />
             </div>
           </motion.div>
 
-          {/* Image 3 — center-right */}
           <motion.div
             style={{ y: imgY3 }}
-            className="absolute top-[10%] right-[12%] lg:right-[20%] w-[35%] lg:w-[22%]"
+            className="absolute bottom-0 right-[10%] lg:right-[18%] w-[35%] lg:w-[22%]"
           >
             <div className="aspect-[3/4] overflow-hidden">
-              <img
-                src={somTowerDetail}
-                alt="Tower facade"
-                className="w-full h-full object-cover"
-              />
+              <img src={somTowerDetail} alt="Tower facade" className="w-full h-full object-cover" />
             </div>
           </motion.div>
 
-          {/* Image 4 — far right */}
           <motion.div
             style={{ y: imgY4 }}
-            className="absolute top-[-5%] right-[-3%] lg:right-[0%] w-[30%] lg:w-[20%]"
+            className="absolute bottom-0 right-[-2%] lg:right-[0%] w-[30%] lg:w-[20%]"
           >
             <div className="aspect-[3/4] overflow-hidden">
-              <img
-                src={towerFacadeDetail}
-                alt="Architectural detail"
-                className="w-full h-full object-cover"
-              />
+              <img src={towerFacadeDetail} alt="Architectural detail" className="w-full h-full object-cover" />
             </div>
           </motion.div>
 
-          {/* ── TEXT (DOM second → paints on top with blend) ──
-              Pinned center. Never moves. */}
+          {/* ── TEXT — pinned center, never moves ── */}
           <div className="absolute inset-0 flex items-center pointer-events-none select-none">
             <div className="w-full px-4 lg:px-0">
               <h1
