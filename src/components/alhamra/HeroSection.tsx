@@ -7,6 +7,22 @@ import somTowerDetail from "@/assets/som-tower-detail.jpg";
 import interiorLobby from "@/assets/interior-lobby.jpg";
 import towerFacadeDetail from "@/assets/tower-facade-detail.jpg";
 
+/*
+  Crestline Hero Scroll Effect
+  ─────────────────────────────
+  Frame 1 (top): Full-screen text only. Solid black on white.
+  Frame 2 (scrolling): Images glide UP from below into the text area.
+  Frame 3 (overlap): Images sit BEHIND text. Where they overlap,
+    text becomes transparent outlines showing images through letterforms.
+
+  Technique: Text is color:white + mix-blend-mode:difference.
+    - Over white bg: difference(white,white) = black → normal text ✓
+    - Over images: difference(white,img) = inverted → transparent outlines ✓
+
+  DOM order: Images FIRST (paint first), Text SECOND (paints on top with blend).
+  No z-index on text — blend mode works across the flat stacking context.
+*/
+
 const HeroSection = () => {
   const { language } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
@@ -16,173 +32,172 @@ const HeroSection = () => {
     offset: ["start start", "end start"],
   });
 
-  // Images start below text and parallax upward to overlap
-  const imgY1 = useTransform(scrollYProgress, [0, 1], ["15%", "-40%"]);
-  const imgY2 = useTransform(scrollYProgress, [0, 1], ["25%", "-35%"]);
-  const imgY3 = useTransform(scrollYProgress, [0, 1], ["20%", "-45%"]);
-  const imgY4 = useTransform(scrollYProgress, [0, 1], ["30%", "-30%"]);
+  // Images: start fully below viewport, glide up into text zone
+  const imgY1 = useTransform(scrollYProgress, [0, 0.7], ["100%", "-20%"]);
+  const imgY2 = useTransform(scrollYProgress, [0, 0.7], ["115%", "-10%"]);
+  const imgY3 = useTransform(scrollYProgress, [0, 0.7], ["125%", "-25%"]);
+  const imgY4 = useTransform(scrollYProgress, [0, 0.7], ["110%", "-15%"]);
 
-  // Text stays relatively still, fades slightly
-  const textOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0.3]);
-  // Scroll indicator fades out quickly
-  const indicatorOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
+  // Scroll indicator fades out
+  const indicatorOpacity = useTransform(scrollYProgress, [0, 0.08], [1, 0]);
 
-  const words =
+  const lines =
     language === "en"
       ? [
-          "Where", "Functionality",
-          "Meets", "Aesthetic,",
-          "Your", "Architectural",
-          "Journey", "Starts Here.",
+          "Where      Functionality",
+          "Meets   Aesthetic,   Your",
+          "Architectural    Journey",
+          "Starts Here.",
         ]
       : [
-          "حيث", "تلتقي",
-          "الهيبة", "المعمارية",
-          "بالحضور", "الدائم",
-          "رحلتك", "التجارية هنا.",
+          "حيث   تلتقي   الهيبة",
+          "المعمارية   بالحضور",
+          "الدائم   رحلتك   التجارية",
+          "تبدأ هنا.",
         ];
 
   return (
     <section
       ref={sectionRef}
-      className="relative bg-background overflow-hidden"
-      style={{ minHeight: "140vh" }}
+      className="relative bg-background"
+      style={{ height: "180vh" }}
     >
-      {/* ═══════════════════════════════════════════
-          HERO CONTAINER — Text + Images overlap
-          ═══════════════════════════════════════════ */}
+      {/* Sticky frame — pins to viewport while section scrolls */}
       <div className="sticky top-0 h-screen flex items-center overflow-hidden">
-        <div className="container mx-auto px-6 lg:px-12 relative">
+        {/* 
+          CRITICAL: No isolation on this container.
+          Images and text are siblings in a flat stacking context
+          so mix-blend-mode on text blends with images below.
+        */}
+        <div className="container mx-auto px-4 lg:px-12 relative w-full">
 
-          {/* ── TEXT LAYER ──
-              Huge uppercase, centered, acts as the background layer.
-              mix-blend-mode makes it transparent over images. */}
-          <motion.div
-            style={{ opacity: textOpacity }}
-            className="relative z-10 pointer-events-none select-none"
-          >
-            <h1 className="hero-blend-text text-[clamp(2.2rem,7vw,7rem)] font-sans font-semibold uppercase leading-[1.0] tracking-[-0.03em] text-foreground text-center lg:text-left">
-              {words.map((word, i) => (
-                <span key={i} className="inline-block overflow-hidden mx-[0.15em]">
-                  <motion.span
-                    initial={{ y: "110%", opacity: 0 }}
-                    animate={{ y: "0%", opacity: 1 }}
-                    transition={{
-                      duration: 1,
-                      delay: 0.2 + i * 0.06,
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
-                    className="inline-block"
-                  >
-                    {word}
-                  </motion.span>
-                </span>
-              ))}
-            </h1>
-          </motion.div>
+          {/* ── IMAGES (paint first in DOM → behind text) ── */}
 
-          {/* ── IMAGE LAYER ──
-              Images positioned absolutely over the text grid,
-              parallax upward on scroll to overlap the text.
-              They sit above the text layer so blend-mode takes effect. */}
-
-          {/* Image 1 — Left, overlapping first two text lines */}
+          {/* Image 1 — left side, overlaps lines 3-4 area */}
           <motion.div
             style={{ y: imgY1 }}
-            className="absolute top-[5%] left-[3%] lg:left-[5%] w-[35%] lg:w-[22%] z-20"
+            className="absolute top-[10%] left-[2%] lg:left-[5%] w-[38%] lg:w-[24%]"
           >
             <motion.div
               initial={{ clipPath: "inset(100% 0 0 0)", opacity: 0 }}
               animate={{ clipPath: "inset(0% 0 0 0)", opacity: 1 }}
-              transition={{ duration: 1.3, delay: 0.6, ease: [0.76, 0, 0.24, 1] }}
-              className="aspect-[3/4] overflow-hidden shadow-2xl"
+              transition={{ duration: 1.3, delay: 0.7, ease: [0.76, 0, 0.24, 1] }}
+              className="aspect-[3/4] overflow-hidden"
             >
               <motion.img
                 src={towerLowangle}
                 alt="Al Hamra Tower"
                 className="w-full h-full object-cover"
-                initial={{ scale: 1.3 }}
+                initial={{ scale: 1.15 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 2, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 2, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
               />
             </motion.div>
           </motion.div>
 
-          {/* Image 2 — Center-left, slightly lower */}
+          {/* Image 2 — center-left, taller */}
           <motion.div
             style={{ y: imgY2 }}
-            className="absolute top-[15%] left-[15%] lg:left-[20%] w-[30%] lg:w-[18%] z-20"
+            className="absolute top-[5%] left-[18%] lg:left-[22%] w-[28%] lg:w-[18%]"
           >
             <motion.div
-              initial={{ clipPath: "inset(0 0 100% 0)", opacity: 0 }}
-              animate={{ clipPath: "inset(0 0 0% 0)", opacity: 1 }}
-              transition={{ duration: 1.3, delay: 0.8, ease: [0.76, 0, 0.24, 1] }}
-              className="aspect-[4/5] overflow-hidden shadow-2xl"
+              initial={{ clipPath: "inset(100% 0 0 0)", opacity: 0 }}
+              animate={{ clipPath: "inset(0% 0 0 0)", opacity: 1 }}
+              transition={{ duration: 1.3, delay: 0.85, ease: [0.76, 0, 0.24, 1] }}
+              className="aspect-[3/5] overflow-hidden"
             >
               <motion.img
                 src={interiorLobby}
                 alt="Tower interior"
                 className="w-full h-full object-cover"
-                initial={{ scale: 1.3 }}
+                initial={{ scale: 1.15 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 2, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 2, delay: 0.85, ease: [0.16, 1, 0.3, 1] }}
               />
             </motion.div>
           </motion.div>
 
-          {/* Image 3 — Center-right, larger */}
+          {/* Image 3 — center-right, larger */}
           <motion.div
             style={{ y: imgY3 }}
-            className="absolute top-[25%] right-[8%] lg:right-[18%] w-[38%] lg:w-[24%] z-20"
+            className="absolute top-[15%] right-[12%] lg:right-[20%] w-[35%] lg:w-[22%]"
           >
             <motion.div
               initial={{ clipPath: "inset(100% 0 0 0)", opacity: 0 }}
               animate={{ clipPath: "inset(0% 0 0 0)", opacity: 1 }}
-              transition={{ duration: 1.4, delay: 0.7, ease: [0.76, 0, 0.24, 1] }}
-              className="aspect-[3/4] overflow-hidden shadow-2xl"
+              transition={{ duration: 1.4, delay: 0.8, ease: [0.76, 0, 0.24, 1] }}
+              className="aspect-[3/4] overflow-hidden"
             >
               <motion.img
                 src={somTowerDetail}
                 alt="Tower facade"
                 className="w-full h-full object-cover"
-                initial={{ scale: 1.4 }}
+                initial={{ scale: 1.15 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 2.2, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 2.2, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
               />
             </motion.div>
           </motion.div>
 
-          {/* Image 4 — Far right, offset */}
+          {/* Image 4 — far right, partially off-screen */}
           <motion.div
             style={{ y: imgY4 }}
-            className="hidden lg:block absolute top-[0%] right-[0%] w-[20%] z-20"
+            className="absolute top-[0%] right-[-3%] lg:right-[0%] w-[30%] lg:w-[20%]"
           >
             <motion.div
-              initial={{ clipPath: "inset(0 100% 0 0)", opacity: 0 }}
-              animate={{ clipPath: "inset(0 0% 0 0)", opacity: 1 }}
-              transition={{ duration: 1.2, delay: 0.9, ease: [0.76, 0, 0.24, 1] }}
-              className="aspect-[3/4] overflow-hidden shadow-2xl"
+              initial={{ clipPath: "inset(100% 0 0 0)", opacity: 0 }}
+              animate={{ clipPath: "inset(0% 0 0 0)", opacity: 1 }}
+              transition={{ duration: 1.2, delay: 0.95, ease: [0.76, 0, 0.24, 1] }}
+              className="aspect-[3/4] overflow-hidden"
             >
               <motion.img
                 src={towerFacadeDetail}
                 alt="Architectural detail"
                 className="w-full h-full object-cover"
-                initial={{ scale: 1.3 }}
+                initial={{ scale: 1.15 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 1.8, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 1.8, delay: 0.95, ease: [0.16, 1, 0.3, 1] }}
               />
             </motion.div>
           </motion.div>
+
+          {/* ── TEXT (paints AFTER images in DOM → visually on top) ──
+              mix-blend-mode:difference + color:white
+              makes text look black on white bg but transparent on images */}
+          <div className="relative pointer-events-none select-none">
+            <h1
+              className="hero-blend-text font-sans font-medium uppercase leading-[1.05] tracking-[-0.02em] whitespace-pre-wrap"
+              style={{ fontSize: "clamp(2rem, 6.5vw, 6.5rem)" }}
+            >
+              {lines.map((line, lineIndex) => (
+                <span key={lineIndex} className="block overflow-hidden">
+                  <motion.span
+                    initial={{ y: "100%" }}
+                    animate={{ y: "0%" }}
+                    transition={{
+                      duration: 1,
+                      delay: 0.15 + lineIndex * 0.1,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                    className="block"
+                  >
+                    {line}
+                  </motion.span>
+                </span>
+              ))}
+            </h1>
+          </div>
+
         </div>
       </div>
 
-      {/* Scroll indicator — fixed at bottom of sticky frame */}
+      {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 0.8 }}
-        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2 pointer-events-none"
+        transition={{ delay: 1.4, duration: 0.8 }}
         style={{ opacity: indicatorOpacity }}
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2 pointer-events-none"
       >
         <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
           {language === "en" ? "Scroll" : "مرر"}

@@ -401,21 +401,24 @@
 }
 
 /* ═══════════════════════════════════════════════
-   Hero Text Blend — Letters become transparent
-   over images as they scroll and overlap.
-   Uses mix-blend-mode so text reveals images
-   through the letterforms (Crestline-style).
+   Hero Text Blend — Crestline scroll-overlap effect
+   
+   Trick: Text is actually WHITE with mix-blend-mode: difference.
+   - Over white background: difference(white, white) = BLACK → text looks normal
+   - Over images: difference(white, image) = inverted → text becomes
+     transparent/light outlines revealing the image beneath the letters.
+   
+   Z-order: Text z-20 on top, images z-10 behind.
    ═══════════════════════════════════════════════ */
 .hero-blend-text {
+  color: white;
   mix-blend-mode: difference;
-  color: hsl(var(--foreground));
-  position: relative;
-  z-index: 10;
 }
 
-/* Dark mode — exclusion works better on dark backgrounds */
+/* Dark mode — invert: black text + difference on dark bg */
 .dark .hero-blend-text {
-  mix-blend-mode: exclusion;
+  color: black;
+  mix-blend-mode: difference;
 }
 
 /* ═══════════════════════════════════════════════
