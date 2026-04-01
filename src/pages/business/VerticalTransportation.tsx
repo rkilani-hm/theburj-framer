@@ -153,7 +153,7 @@ const VerticalTransportation = () => {
         </section>
 
         {/* Scroll-driven sections — Desktop */}
-        <section className="hidden lg:block py-24 bg-background">
+        <section className="hidden lg:block py-16 bg-background">
           <div className="container mx-auto px-6 lg:px-12">
             <div className="grid grid-cols-12 gap-16">
               <div className="col-span-5 space-y-6">
