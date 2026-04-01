@@ -59,7 +59,7 @@ const HeroSection = () => {
     <section
       ref={sectionRef}
       className="relative"
-      style={{ height: "112vh", backgroundColor: "#FFFFFF" }}
+      style={{ height: "101vh", backgroundColor: "#FFFFFF" }}
     >
       {/* Sticky frame — pins to viewport for the full 250vh.
           White bg here (not on section) so blend works in same stacking context. */}
