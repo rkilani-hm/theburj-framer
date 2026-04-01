@@ -178,7 +178,7 @@ const VerticalTransportation = () => {
                 ))}
               </div>
               <div className="col-span-7">
-                <div className="sticky top-32">
+                <div className="sticky top-24">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={activeSection}
