@@ -160,9 +160,10 @@ const ProjectRow = ({ page, index }: { page: PageLinkItem; index: number }) => {
       </motion.div>
 
       {/* Floating Image Preview */}
-      <AnimatePresence>
+      <AnimatePresence initial={false} mode="sync">
         {isHovered && (
           <motion.div
+            key="hover-preview"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}

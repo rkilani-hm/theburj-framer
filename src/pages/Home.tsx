@@ -317,9 +317,10 @@ const ServiceAccordion = ({
       </button>
 
       {/* Expanding Image Panel */}
-      <AnimatePresence>
+      <AnimatePresence initial={false} mode="sync">
         {isOpen && (
           <motion.div
+            key="accordion-content"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
