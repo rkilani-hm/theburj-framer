@@ -293,7 +293,7 @@ const ServiceAccordion = ({
         className="w-full grid grid-cols-12 gap-4 items-center py-8 lg:py-10 cursor-pointer group text-left"
       >
         <div className="col-span-1">
-          <span className="text-sm font-sans text-muted-foreground">/{String(index + 1).padStart(2, "0")}</span>
+          <span className="text-sm font-sans text-muted-foreground">{String(index + 1).padStart(2, "0")}</span>
         </div>
         <div className="col-span-9 lg:col-span-4">
           <h3 className="text-sm font-sans font-medium uppercase tracking-wider text-foreground group-hover:text-primary transition-colors duration-300">

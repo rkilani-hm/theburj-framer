@@ -25,35 +25,35 @@ const HomePageLinks = () => {
 
   const pages: PageLinkItem[] = [
     {
-      number: "/01",
+      number: "01",
       location: language === "en" ? "Architecture & Engineering" : "العمارة والهندسة",
       title: language === "en" ? "The Tower" : "البرج",
       image: somTowerSkyline,
       link: "/tower",
     },
     {
-      number: "/02",
+      number: "02",
       location: language === "en" ? "Workspace & Enterprise" : "بيئة العمل والأعمال",
       title: language === "en" ? "Business Experience" : "تجربة الأعمال",
       image: interiorLobby,
       link: "/business/workplace-experience",
     },
     {
-      number: "/03",
+      number: "03",
       location: language === "en" ? "Services & Sustainability" : "الخدمات والاستدامة",
       title: language === "en" ? "Facilities & Services" : "المرافق والخدمات",
       image: towerEntranceFountain,
       link: "/services",
     },
     {
-      number: "/04",
+      number: "04",
       location: language === "en" ? "Opportunities & Inquiry" : "الفرص والاستفسار",
       title: language === "en" ? "Leasing" : "التأجير",
       image: skylineReflection,
       link: "/leasing/opportunities",
     },
     {
-      number: "/05",
+      number: "05",
       location: language === "en" ? "Location & Connectivity" : "الموقع والاتصال",
       title: language === "en" ? "Location & Access" : "الموقع والوصول",
       image: towerAerialSunset,
