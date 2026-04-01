@@ -32,7 +32,7 @@ const HeroSection = () => {
   // Only images move. Full [0,1] range = slow smooth glide over 250vh of scroll.
   // Start: images fully below viewport (85-110%)
   // End: images have passed up above the text (-40 to -60%)
-  const imgY1 = useTransform(scrollYProgress, [0, 1], ["85%",  "-50%"]);
+  const imgY1 = useTransform(scrollYProgress, [0, 1], ["0%",  "-50%"]);
   const imgY2 = useTransform(scrollYProgress, [0, 1], ["100%", "-40%"]);
   const imgY3 = useTransform(scrollYProgress, [0, 1], ["95%",  "-55%"]);
   const imgY4 = useTransform(scrollYProgress, [0, 1], ["90%",  "-45%"]);
