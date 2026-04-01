@@ -153,7 +153,7 @@ const VerticalTransportation = () => {
         </section>
 
         {/* Scroll-driven sections — Desktop */}
-        <section className="hidden lg:block py-24 bg-background">
+        <section className="hidden lg:block py-16 bg-background">
           <div className="container mx-auto px-6 lg:px-12">
             <div className="grid grid-cols-12 gap-16">
               <div className="col-span-5 space-y-6">
@@ -178,7 +178,7 @@ const VerticalTransportation = () => {
                 ))}
               </div>
               <div className="col-span-7">
-                <div className="sticky top-32">
+                <div className="sticky top-24">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={activeSection}
@@ -187,7 +187,7 @@ const VerticalTransportation = () => {
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ duration: 0.5 }}
                     >
-                      <div className="aspect-[4/3] overflow-hidden mb-8">
+                      <div className="aspect-[16/10] overflow-hidden mb-6">
                         <img src={sections[activeSection].image} alt={sections[activeSection].titleEn} className="w-full h-full object-cover" />
                       </div>
                       <p className="text-muted-foreground leading-relaxed max-w-lg">
