@@ -112,7 +112,7 @@ const Home = () => {
         <HeroSection />
 
         {/* ─── ABOUT Section ─── */}
-        <section className="pt-8 pb-16 lg:pt-12 lg:pb-24 bg-background">
+        <section className="pt-0 pb-16 lg:pt-0 lg:pb-24 bg-background">
           <div className="container mx-auto px-6 lg:px-12">
             <div ref={aboutRef} className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
               {/* Text */}
