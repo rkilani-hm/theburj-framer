@@ -187,7 +187,7 @@ const VerticalTransportation = () => {
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ duration: 0.5 }}
                     >
-                      <div className="aspect-[4/3] overflow-hidden mb-8">
+                      <div className="aspect-[16/10] overflow-hidden mb-6">
                         <img src={sections[activeSection].image} alt={sections[activeSection].titleEn} className="w-full h-full object-cover" />
                       </div>
                       <p className="text-muted-foreground leading-relaxed max-w-lg">
