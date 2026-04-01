@@ -161,7 +161,7 @@ const VerticalTransportation = () => {
                   <div
                     key={section.id}
                     ref={(el) => { sectionRefs.current[index] = el; }}
-                    className="min-h-[9vh] flex items-start pt-8 cursor-pointer"
+                    className="min-h-[7vh] flex items-start pt-6 cursor-pointer"
                     onClick={() => setActiveSection(index)}
                   >
                     <div>
