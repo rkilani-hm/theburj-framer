@@ -35,7 +35,7 @@ const MobileMenuGroup = ({ group, language, location, onLinkClick, variants }: M
         className="w-full flex items-center justify-between py-4 group"
       >
         <span
-          className={`text-xl font-serif font-medium tracking-wide transition-colors duration-300 ${
+          className={`text-2xl font-serif font-light tracking-[0.05em] transition-colors duration-300 ${
             isActive ? "text-primary" : "text-background/80 group-active:text-background"
           }`}
         >
@@ -210,7 +210,7 @@ const Header = () => {
                   menuOpen ? "brightness-0 invert" : ""
                 }`}
               />
-              <span className={`text-lg font-sans font-medium tracking-[0.15em] uppercase transition-colors duration-500 ${
+              <span className={`text-xl font-serif font-light tracking-[0.22em] uppercase transition-colors duration-500 ${
                 menuOpen ? "text-background" : "text-foreground"
               }`}>
                 Al Hamra
@@ -234,7 +234,7 @@ const Header = () => {
                   onMouseLeave={() => setActiveDropdown(null)}
                 >
                   <button
-                    className={`text-sm tracking-wide transition-colors duration-300 ${
+                    className={`text-[0.7rem] font-outfit tracking-[0.18em] uppercase transition-colors duration-300 ${
                       isGroupActive(group) ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                     }`}
                   >

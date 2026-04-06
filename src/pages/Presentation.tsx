@@ -8,9 +8,9 @@ const Presentation = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white print:bg-white">
+    <div className="min-h-screen bg-background print:bg-background">
       {/* Print-hidden header */}
-      <div className="print:hidden fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur border-b border-border">
+      <div className="print:hidden fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur border-b border-border">
         <div className="container mx-auto max-w-4xl px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="w-4 h-4" />
@@ -84,19 +84,19 @@ const Presentation = () => {
             <div>
               <h4 className="font-medium mb-4">Color Palette</h4>
               <div className="space-y-3">
-                <ColorSwatch color="bg-white border" label="White & Off-white" />
-                <ColorSwatch color="bg-stone-100" label="Light Stone Tones" />
-                <ColorSwatch color="bg-gray-200" label="Soft Greys" />
-                <ColorSwatch color="bg-charcoal-800" label="Charcoal Accents" />
+                <ColorSwatch color="bg-background border" label="Cream #F5F0EB" />
+                <ColorSwatch color="bg-secondary" label="Cream Alt #EDE8E2" />
+                <ColorSwatch color="bg-primary" label="Tan/Bronze #A08C72" />
+                <ColorSwatch color="bg-foreground" label="Near-Black #1D1D1B" />
               </div>
             </div>
             <div>
               <h4 className="font-medium mb-4">Typography</h4>
               <div className="space-y-4 text-sm text-muted-foreground">
-                <p><strong>Primary:</strong> Inter (Latin) / Noto Sans Arabic</p>
-                <p><strong>Approach:</strong> Clean, architectural sans-serif</p>
-                <p><strong>Headings:</strong> Generous letter-spacing, light weights</p>
-                <p><strong>Body:</strong> Readable, professional, refined</p>
+                <p><strong>Display:</strong> Cormorant Garamond (serif)</p>
+                <p><strong>Body:</strong> Outfit (sans-serif)</p>
+                <p><strong>Arabic:</strong> Noto Sans Arabic</p>
+                <p><strong>Style:</strong> Crestline-inspired — light weights, editorial spacing</p>
               </div>
             </div>
           </div>

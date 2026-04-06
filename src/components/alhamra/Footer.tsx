@@ -87,7 +87,7 @@ const Footer = () => {
                 alt="Al Hamra Tower"
                 className="h-12 lg:h-14 w-auto object-contain brightness-0 invert"
               />
-              <h2 className="text-3xl lg:text-4xl font-sans font-medium uppercase tracking-[0.1em]">
+              <h2 className="text-3xl lg:text-4xl font-serif font-light tracking-[0.25em] uppercase">
                 Al Hamra
               </h2>
             </div>

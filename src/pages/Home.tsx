@@ -1,3 +1,4 @@
+import CrestlineMarquee from "@/components/alhamra/CrestlineMarquee";
 import Header from "@/components/alhamra/Header";
 import HeroSection from "@/components/alhamra/HeroSection";
 import Footer from "@/components/alhamra/Footer";
@@ -110,6 +111,7 @@ const Home = () => {
       <Header />
       <main>
         <HeroSection />
+        <CrestlineMarquee />
 
         {/* ─── ABOUT Section ─── */}
         <section className="pt-0 pb-16 lg:pt-0 lg:pb-24 bg-background">
@@ -371,7 +373,7 @@ const AnimatedStat = ({
       transition={{ duration: 0.6, delay: index * 0.15 }}
       className="text-center lg:text-left"
     >
-      <p className="text-4xl lg:text-5xl font-serif font-medium text-background mb-2 tabular-nums">
+      <p className="text-4xl lg:text-5xl font-serif font-light text-background mb-2 tabular-nums">
         {count}
         <span className="text-primary">{stat.suffix}</span>
       </p>
@@ -427,7 +429,7 @@ const CTASection = ({
           <span className="text-xs uppercase tracking-[0.3em] text-background/40 mb-8 block">
             {language === "en" ? "INQUIRE" : "استفسر"}
           </span>
-          <h2 className="text-3xl lg:text-5xl font-serif font-medium text-background mb-6 leading-tight">
+          <h2 className="text-3xl lg:text-5xl font-serif font-light text-background mb-6 leading-tight">
             {language === "en"
               ? "Your address at Kuwait's most iconic landmark."
               : "عنوانك في أبرز معلم في الكويت."}

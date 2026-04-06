@@ -2,169 +2,159 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Al Hamra Tower Design System
-   Official Brand Identity Guidelines
-   Main: #CD1719 (Al Hamra Red) · #B2B2B2 (Silver Grey)
-   Sub:  #1D1D1B (Near Black)   · #EDEDED (Light Grey)
-   English: Century Gothic Bold/Regular
-   Arabic:  Ge Flow Bold/Regular
+/*
+  ═══════════════════════════════════════════════════════════════
+  THE BURJ — Crestline Theme System
+  Inspired by crestline.framer.website
+  ─────────────────────────────────────────────────────────────
+  Palette:
+    Cream Background  #F5F0EB  → HSL 30 33% 94%
+    Warm Cream Alt    #EDE8E2  → HSL 30 19% 91%
+    Near-Black Text   #1D1D1B  → HSL 60 4% 11%
+    Tan/Bronze Accent #A08C72  → HSL 34 19% 54%
+    Muted Text        #6B6558  → HSL 40 8% 38%
+    Border            #D8D0C6  → HSL 30 13% 81%
+    Pure Off-White    #FDFAF7  → HSL 36 50% 98%
+
+  Typography:
+    Display:  Cormorant Garamond (serif)
+    Body:     Outfit (sans-serif)
+    Arabic:   Noto Sans Arabic
+  ═══════════════════════════════════════════════════════════════
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600&display=swap');
+/* ── Google Fonts ───────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Outfit:wght@200;300;400;500;600&family=Noto+Sans+Arabic:wght@300;400;500;600&display=swap');
 
 @layer base {
   :root {
-    /* ═══════════════════════════════════════════════
-       Al Hamra Official Brand Palette
-       Source: Al Hamra Identity Guidelines
-       Main:  #CD1719 (Red) · #B2B2B2 (Silver)
-       Sub:   #1D1D1B (Near Black) · #EDEDED (Light Grey)
-       ═══════════════════════════════════════════════ */
+    /* ─── Core Semantic Tokens ─────────────────────────── */
+    --background:  30 33% 94%;      /* #F5F0EB  Warm Cream        */
+    --foreground:  60 4% 11%;       /* #1D1D1B  Near Black        */
 
-    /* Light Grey Background — #EDEDED */
-    --background: 0 0% 93%;
-    /* Near Black Text — #1D1D1B */
-    --foreground: 60 4% 11%;
-
-    /* Cards — Pure White for contrast on #EDEDED bg */
-    --card: 0 0% 100%;
+    --card:         36 50% 98%;     /* #FDFAF7  Pure Off-White    */
     --card-foreground: 60 4% 11%;
 
-    --popover: 0 0% 100%;
+    --popover:      36 50% 98%;
     --popover-foreground: 60 4% 11%;
 
-    /* Al Hamra Red — #CD1719 — Primary Brand Accent */
-    --primary: 359 80% 45%;
-    --primary-foreground: 0 0% 100%;
+    /* Tan/Bronze replaces Red as primary accent */
+    --primary:      34 19% 54%;     /* #A08C72  Tan Bronze        */
+    --primary-foreground: 36 50% 98%;
 
-    /* Silver Grey Secondary — #B2B2B2 tinted lighter */
-    --secondary: 0 0% 90%;
+    --secondary:    30 19% 91%;     /* #EDE8E2  Warm Cream Alt    */
     --secondary-foreground: 60 4% 11%;
 
-    /* Muted — Soft grey for subdued elements */
-    --muted: 0 0% 88%;
-    --muted-foreground: 0 0% 40%;
+    --muted:        30 19% 91%;
+    --muted-foreground: 40 8% 38%; /* #6B6558  Muted Text        */
 
-    /* Accent — Soft red tint for hover states */
-    --accent: 359 30% 95%;
-    --accent-foreground: 359 80% 40%;
+    --accent:       34 15% 92%;
+    --accent-foreground: 34 19% 42%;
 
-    --destructive: 359 80% 45%;
+    --destructive:  359 80% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Silver Grey Borders — #B2B2B2 */
-    --border: 0 0% 82%;
-    --input: 0 0% 82%;
-    --ring: 359 80% 45%;
+    --border:       30 13% 81%;     /* #D8D0C6  Warm Border       */
+    --input:        30 13% 81%;
+    --ring:         34 19% 54%;
 
-    --radius: 0.25rem;
+    --radius: 0.125rem;
 
-    /* ── Al Hamra Brand Tokens ── */
-    /* Brand Red Scale */
-    --alhamra-red: 359 80% 45%;
-    --alhamra-red-light: 359 70% 92%;
-    --alhamra-red-dark: 359 85% 35%;
+    /* ─── Brand Tokens ─────────────────────────────────── */
+    /* Tan/Bronze Scale */
+    --alhamra-red:       34 19% 54%;   /* repurposed → tan accent    */
+    --alhamra-red-light: 34 30% 92%;
+    --alhamra-red-dark:  34 22% 40%;
 
-    /* Brand Neutrals */
-    --limestone: 0 0% 93%;
-    --limestone-warm: 0 0% 96%;
-    --cool-grey: 0 0% 90%;
-    --deep-slate: 60 4% 11%;
-    --slate-light: 0 0% 30%;
-    --charcoal: 60 4% 11%;
-    --charcoal-light: 0 0% 25%;
-    --charcoal-dark: 0 0% 6%;
-    --beige: 0 0% 82%;
-    --beige-light: 0 0% 88%;
-    --silver: 0 0% 70%;
-
-    /* Hairline divider */
-    --hairline: 0 0% 0% / 0.10;
+    /* Neutrals */
+    --limestone:      30 33% 94%;
+    --limestone-warm: 36 50% 98%;
+    --cool-grey:      30 19% 91%;
+    --deep-slate:     60 4% 11%;
+    --slate-light:    40 6% 32%;
+    --charcoal:       60 4% 11%;
+    --charcoal-light: 40 5% 28%;
+    --charcoal-dark:  60 4% 6%;
+    --beige:          30 13% 81%;
+    --beige-light:    30 19% 88%;
+    --silver:         30 8% 60%;
 
     /* Glassmorphism */
-    --glass-bg: 0 0% 100% / 0.80;
+    --glass-bg:   36 50% 98% / 0.85;
     --glass-blur: 12px;
+    --hairline:   30 13% 81% / 0.6;
 
-    /* Gradient tokens — brand-aligned */
-    --gradient-limestone: linear-gradient(180deg, hsl(0 0% 93%) 0%, hsl(0 0% 96%) 100%);
-    --gradient-cool: linear-gradient(180deg, hsl(0 0% 96%) 0%, hsl(0 0% 93%) 100%);
-    --gradient-overlay: linear-gradient(180deg, transparent 0%, hsl(60 4% 11% / 0.5) 100%);
+    /* Gradients */
+    --gradient-limestone: linear-gradient(180deg, hsl(30 33% 94%) 0%, hsl(30 19% 91%) 100%);
+    --gradient-cool:      linear-gradient(180deg, hsl(30 19% 91%) 0%, hsl(30 33% 94%) 100%);
+    --gradient-overlay:   linear-gradient(180deg, transparent 0%, hsl(60 4% 11% / 0.45) 100%);
 
-    --sidebar-background: 0 0% 96%;
+    --sidebar-background: 30 33% 94%;
     --sidebar-foreground: 60 4% 11%;
-    --sidebar-primary: 359 80% 45%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 359 30% 95%;
+    --sidebar-primary: 34 19% 54%;
+    --sidebar-primary-foreground: 36 50% 98%;
+    --sidebar-accent: 34 15% 92%;
     --sidebar-accent-foreground: 60 4% 11%;
-    --sidebar-border: 0 0% 82%;
-    --sidebar-ring: 359 80% 45%;
+    --sidebar-border: 30 13% 81%;
+    --sidebar-ring: 34 19% 54%;
   }
 
   .dark {
-    /* Al Hamra Dark Mode — Near Black base #1D1D1B */
-    --background: 60 4% 7%;
-    --foreground: 0 0% 93%;
+    --background:  60 4% 8%;
+    --foreground:  30 33% 92%;
 
-    --card: 60 4% 10%;
-    --card-foreground: 0 0% 93%;
+    --card:        60 4% 11%;
+    --card-foreground: 30 33% 92%;
 
-    --popover: 60 4% 7%;
-    --popover-foreground: 0 0% 93%;
+    --popover:     60 4% 8%;
+    --popover-foreground: 30 33% 92%;
 
-    /* Al Hamra Red — slightly lifted for dark bg */
-    --primary: 359 80% 50%;
-    --primary-foreground: 0 0% 100%;
+    --primary:      34 22% 62%;
+    --primary-foreground: 60 4% 8%;
 
-    --secondary: 60 2% 14%;
-    --secondary-foreground: 0 0% 93%;
+    --secondary:    60 2% 14%;
+    --secondary-foreground: 30 20% 88%;
 
-    --muted: 60 2% 16%;
-    --muted-foreground: 0 0% 55%;
+    --muted:        60 2% 16%;
+    --muted-foreground: 30 8% 55%;
 
-    --accent: 359 40% 15%;
-    --accent-foreground: 359 70% 70%;
+    --accent:       34 15% 18%;
+    --accent-foreground: 34 22% 70%;
 
-    --destructive: 359 70% 40%;
+    --destructive:  359 70% 40%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 60 2% 20%;
-    --input: 60 2% 20%;
-    --ring: 359 80% 50%;
+    --border:       60 2% 20%;
+    --input:        60 2% 20%;
+    --ring:         34 22% 60%;
 
-    /* Brand tokens — dark mode */
-    --alhamra-red: 359 80% 50%;
-    --alhamra-red-light: 359 50% 20%;
-    --alhamra-red-dark: 359 85% 40%;
+    --alhamra-red: 34 22% 62%;
+    --alhamra-red-light: 34 15% 22%;
+    --alhamra-red-dark: 34 22% 48%;
 
-    --limestone: 60 4% 8%;
-    --limestone-warm: 60 4% 10%;
-    --cool-grey: 60 2% 14%;
-    --deep-slate: 0 0% 88%;
-    --slate-light: 0 0% 65%;
-    --charcoal: 0 0% 93%;
-    --charcoal-light: 0 0% 75%;
-    --charcoal-dark: 0 0% 96%;
-    --beige: 60 2% 22%;
-    --beige-light: 60 2% 18%;
-    --silver: 0 0% 50%;
+    --limestone:      60 4% 9%;
+    --limestone-warm: 60 4% 12%;
+    --cool-grey:      60 2% 14%;
+    --deep-slate:     30 20% 88%;
+    --slate-light:    30 10% 65%;
+    --charcoal:       30 20% 88%;
+    --charcoal-light: 30 10% 70%;
+    --charcoal-dark:  30 20% 94%;
+    --beige:          60 2% 22%;
+    --beige-light:    60 2% 18%;
+    --silver:         30 5% 45%;
 
+    --glass-bg: 60 4% 7% / 0.88;
     --hairline: 0 0% 100% / 0.08;
-    --glass-bg: 60 4% 7% / 0.85;
-
-    --gradient-limestone: linear-gradient(180deg, hsl(60 4% 7%) 0%, hsl(60 4% 10%) 100%);
-    --gradient-cool: linear-gradient(180deg, hsl(60 2% 14%) 0%, hsl(60 4% 7%) 100%);
-    --gradient-overlay: linear-gradient(180deg, transparent 0%, hsl(0 0% 3% / 0.7) 100%);
 
     --sidebar-background: 60 4% 8%;
-    --sidebar-foreground: 0 0% 93%;
-    --sidebar-primary: 359 80% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 359 40% 15%;
-    --sidebar-accent-foreground: 0 0% 93%;
+    --sidebar-foreground: 30 20% 88%;
+    --sidebar-primary: 34 22% 62%;
+    --sidebar-primary-foreground: 60 4% 8%;
+    --sidebar-accent: 34 15% 18%;
+    --sidebar-accent-foreground: 30 20% 88%;
     --sidebar-border: 60 2% 20%;
-    --sidebar-ring: 359 80% 50%;
+    --sidebar-ring: 34 22% 60%;
   }
 }
 
@@ -175,359 +165,191 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-    line-height: 1.8;
+    font-family: 'Outfit', 'Noto Sans Arabic', system-ui, sans-serif;
+    font-weight: 300;
+    line-height: 1.75;
   }
 
   html {
     scroll-behavior: smooth;
   }
 
-  /* 7-Star Editorial Typography */
+  /* ── Crestline Typography Scale ── */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.08;
+  }
+
+  h1 { @apply text-4xl md:text-5xl lg:text-6xl; line-height: 1.05; }
+  h2 { @apply text-3xl md:text-4xl; line-height: 1.1; }
+  h3 { @apply text-2xl md:text-3xl; line-height: 1.15; }
+
+  /* Arabic overrides — keep Noto Sans */
+  [dir="rtl"] h1,
+  [dir="rtl"] h2,
+  [dir="rtl"] h3,
+  [dir="rtl"] h4,
+  [dir="rtl"] h5,
+  [dir="rtl"] h6 {
+    font-family: 'Noto Sans Arabic', sans-serif;
     font-weight: 500;
-    letter-spacing: -0.03em;
   }
 
-  h1 {
-    @apply text-4xl md:text-5xl lg:text-6xl;
-    line-height: 1.1;
-  }
-
-  h2 {
-    @apply text-3xl md:text-4xl;
-    line-height: 1.15;
-  }
-
-  h3 {
-    @apply text-2xl md:text-3xl;
-    line-height: 1.2;
-  }
-
-  /* Al Hamra Brand Cards — Clean precision */
+  /* Crestline-style cards */
   .card-limestone {
-    @apply bg-card border border-beige rounded-none;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    @apply bg-card border border-beige;
+    border-radius: 2px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.04);
   }
 
-  /* Al Hamra Section Spacing — Generous whitespace */
-  .section-sculptural {
-    @apply py-48 md:py-60;
-  }
-  
-  /* Luxury Section - Maximum whitespace */
-  .section-luxury {
-    @apply py-32 md:py-48 lg:py-56;
-  }
+  .section-sculptural { @apply py-32 md:py-44; }
+  .section-luxury      { @apply py-24 md:py-36 lg:py-44; }
 }
 
 @layer utilities {
-  /* 7-Star Luxury Overline - Signature element */
+  /* ── Crestline Overline / Label ── */
   .overline {
-    @apply text-xs uppercase tracking-[0.25em] text-muted-foreground;
-    font-size: 12px;
-    letter-spacing: 3px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
   }
-  
-  /* Hairline Divider - Ultra-thin elegance */
-  .hairline {
-    @apply w-full h-px;
-    background: rgba(0, 0, 0, 0.08);
-  }
-  
-  .hairline-vertical {
-    @apply h-full w-px;
-    background: rgba(0, 0, 0, 0.08);
-  }
-  
-  /* Glassmorphism - Tower's facade effect */
+
+  /* Hairline dividers */
+  .hairline          { @apply w-full h-px; background: hsl(var(--border)); }
+  .hairline-vertical { @apply h-full w-px;  background: hsl(var(--border)); }
+
+  /* Glassmorphism */
   .glass {
     background: hsl(var(--glass-bg));
     backdrop-filter: blur(var(--glass-blur));
     -webkit-backdrop-filter: blur(var(--glass-blur));
   }
-  
-  /* Sharp images - Art Gallery precision */
-  .img-sharp {
-    @apply rounded-none;
-  }
-  
-  .img-precise {
-    border-radius: 2px;
-  }
 
-  /* Architectural fade animations */
-  .animate-fade-up {
-    animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
+  .img-sharp   { @apply rounded-none; }
+  .img-precise { border-radius: 2px; }
 
-  .animate-fade-up-delayed {
-    animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
-    opacity: 0;
-  }
+  /* Fade-up utilities */
+  .animate-fade-up           { animation: fade-up 0.8s cubic-bezier(0.16,1,0.3,1) forwards; }
+  .animate-fade-up-delayed   { animation: fade-up 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s forwards; opacity: 0; }
+  .animate-fade-up-delayed-2 { animation: fade-up 0.8s cubic-bezier(0.16,1,0.3,1) 0.4s forwards; opacity: 0; }
+  .animate-hero-fade         { animation: hero-fade 2s cubic-bezier(0.16,1,0.3,1) forwards; }
+  .animate-reveal            { animation: reveal 1.2s cubic-bezier(0.16,1,0.3,1) forwards; }
+  .animate-line-grow         { animation: line-grow 1s cubic-bezier(0.16,1,0.3,1) 0.6s forwards; }
 
-  .animate-fade-up-delayed-2 {
-    animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
-    opacity: 0;
-  }
-  
-  /* 7-Star Hero fade - Calm 2s entrance */
-  .animate-hero-fade {
-    animation: hero-fade 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
+  .hover-lift { @apply transition-transform duration-500 ease-out; }
+  .hover-lift:hover { transform: translateY(-4px); }
 
-  .animate-reveal {
-    animation: reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-
-  .animate-line-grow {
-    animation: line-grow 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
-  }
-
-  /* Hover states */
-  .hover-lift {
-    @apply transition-transform duration-500 ease-out;
-  }
-
-  .hover-lift:hover {
-    transform: translateY(-4px);
-  }
-
-  /* Text reveal for sections */
-  .section-reveal {
-    @apply opacity-0;
-    animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-play-state: paused;
-  }
-
-  .section-reveal.visible {
-    animation-play-state: running;
-  }
-
-  /* Architectural grid overlay */
-  .architectural-grid {
-    background-image: 
-      linear-gradient(to right, hsl(var(--border) / 0.3) 1px, transparent 1px),
-      linear-gradient(to bottom, hsl(var(--border) / 0.3) 1px, transparent 1px);
-    background-size: 80px 80px;
-  }
+  .section-reveal          { @apply opacity-0; animation: fade-up 0.8s cubic-bezier(0.16,1,0.3,1) forwards; animation-play-state: paused; }
+  .section-reveal.visible  { animation-play-state: running; }
 
   /* Subtle noise texture */
-  .texture-noise {
-    position: relative;
-  }
-
+  .texture-noise { position: relative; }
   .texture-noise::before {
     content: "";
     position: absolute;
     inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    opacity: 0.015;
+    opacity: 0.012;
     pointer-events: none;
   }
 }
 
+/* ── Keyframes ─────────────────────────────────────────────── */
 @keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hero-fade {
+  0%   { opacity: 0; transform: translateY(18px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes reveal {
-  from {
-    opacity: 0;
-    transform: scale(1.02);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(1.02); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 @keyframes line-grow {
-  from {
-    transform: scaleY(0);
-    opacity: 0;
-  }
-  to {
-    transform: scaleY(1);
-    opacity: 1;
-  }
+  from { transform: scaleY(0); opacity: 0; }
+  to   { transform: scaleY(1); opacity: 1; }
 }
 
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-8px); }
 }
 
 @keyframes ken-burns {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1.08);
-  }
+  0%   { transform: scale(1); }
+  100% { transform: scale(1.06); }
 }
 
-.animate-ken-burns {
-  animation: ken-burns 20s ease-out forwards;
-}
+.animate-ken-burns { animation: ken-burns 22s ease-out forwards; }
 
-/* 7-Star Hero fade animation - 2 second calm entrance */
-@keyframes hero-fade {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* RTL Support */
-[dir="rtl"] {
-  text-align: right;
-}
-
-/* ═══════════════════════════════════════════════
-   Hero Text Blend — Crestline scroll-overlap effect
-   
-   Trick: Text is actually WHITE with mix-blend-mode: difference.
-   - Over white background: difference(white, white) = BLACK → text looks normal
-   - Over images: difference(white, image) = inverted → text becomes
-     transparent/light outlines revealing the image beneath the letters.
-   
-   Z-order: Text z-20 on top, images z-10 behind.
-   ═══════════════════════════════════════════════ */
+/* ── Hero Text Blend ────────────────────────────────────────
+   Text is white + mix-blend-mode:difference.
+   On cream bg (#F5F0EB):  difference(white,cream) ≈ near-black  → reads dark
+   Over images:            difference(white,image) = inverted    → glass effect
+   ────────────────────────────────────────────────────────── */
 .hero-blend-text {
   color: white;
   mix-blend-mode: difference;
 }
-
-/* Dark mode — invert: black text + difference on dark bg */
 .dark .hero-blend-text {
   color: black;
   mix-blend-mode: difference;
 }
 
-/* ═══════════════════════════════════════════════
-   Marquee Ticker — Infinite horizontal scroll
-   ═══════════════════════════════════════════════ */
-.marquee-track {
-  display: flex;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
+/* ── Marquee ────────────────────────────────────────────────── */
+.marquee-track   { display: flex; overflow: hidden; white-space: nowrap; }
 .marquee-content {
   display: flex;
-  animation: marquee-scroll 30s linear infinite;
+  animation: marquee-scroll 32s linear infinite;
   will-change: transform;
 }
-
-.marquee-content:hover {
-  animation-play-state: paused;
-}
+.marquee-content:hover { animation-play-state: paused; }
 
 @keyframes marquee-scroll {
-  0% { transform: translateX(0); }
+  0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 
-/* ═══════════════════════════════════════════════
-   Clip-path reveal utilities
-   ═══════════════════════════════════════════════ */
-.clip-reveal-up {
-  clip-path: inset(100% 0 0 0);
-  animation: clip-up 1.2s cubic-bezier(0.76, 0, 0.24, 1) forwards;
-}
+/* ── Clip-path reveals ──────────────────────────────────────── */
+.clip-reveal-up   { clip-path: inset(100% 0 0 0); animation: clip-up   1.2s cubic-bezier(0.76,0,0.24,1) forwards; }
+.clip-reveal-down { clip-path: inset(0 0 100% 0);  animation: clip-down 1.2s cubic-bezier(0.76,0,0.24,1) forwards; }
+.clip-reveal-left { clip-path: inset(0 100% 0 0);  animation: clip-left 1.2s cubic-bezier(0.76,0,0.24,1) forwards; }
 
-.clip-reveal-down {
-  clip-path: inset(0 0 100% 0);
-  animation: clip-down 1.2s cubic-bezier(0.76, 0, 0.24, 1) forwards;
-}
+@keyframes clip-up   { to { clip-path: inset(0% 0 0 0); } }
+@keyframes clip-down { to { clip-path: inset(0 0 0% 0); } }
+@keyframes clip-left { to { clip-path: inset(0 0% 0 0); } }
 
-.clip-reveal-left {
-  clip-path: inset(0 100% 0 0);
-  animation: clip-left 1.2s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+/* ── Image hover zoom ───────────────────────────────────────── */
+.img-zoom { overflow: hidden; }
+.img-zoom img, .img-zoom video {
+  transition: transform 1.2s cubic-bezier(0.16,1,0.3,1);
 }
+.img-zoom:hover img, .img-zoom:hover video { transform: scale(1.06); }
 
-@keyframes clip-up {
-  to { clip-path: inset(0% 0 0 0); }
-}
+/* ── Text split-line reveal ─────────────────────────────────── */
+.line-reveal { overflow: hidden; display: block; }
+.line-reveal > span { display: block; transform: translateY(100%); animation: line-slide-up 0.8s cubic-bezier(0.16,1,0.3,1) forwards; }
+@keyframes line-slide-up { to { transform: translateY(0); } }
 
-@keyframes clip-down {
-  to { clip-path: inset(0 0 0% 0); }
-}
+/* ── RTL ────────────────────────────────────────────────────── */
+[dir="rtl"] { text-align: right; }
+[dir="ltr"] { text-align: left; }
 
-@keyframes clip-left {
-  to { clip-path: inset(0 0% 0 0); }
-}
+/* ── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 5px; }
+::-webkit-scrollbar-track { background: hsl(var(--background)); }
+::-webkit-scrollbar-thumb { background: hsl(var(--primary)); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--alhamra-red-dark)); }
 
-/* ═══════════════════════════════════════════════
-   Smooth image zoom on hover
-   ═══════════════════════════════════════════════ */
-.img-zoom {
-  overflow: hidden;
-}
-
-.img-zoom img,
-.img-zoom video {
-  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.img-zoom:hover img,
-.img-zoom:hover video {
-  transform: scale(1.08);
-}
-
-/* ═══════════════════════════════════════════════
-   Text split-line reveal helper
-   ═══════════════════════════════════════════════ */
-.line-reveal {
-  overflow: hidden;
-  display: block;
-}
-
-.line-reveal > span {
-  display: block;
-  transform: translateY(100%);
-  animation: line-slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes line-slide-up {
-  to { transform: translateY(0); }
-}
-
-[dir="ltr"] {
-  text-align: left;
-}
-
-/* Smooth scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: hsl(var(--muted));
-}
-
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--silver));
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--slate-light));
-}
+/* ── Selection ──────────────────────────────────────────────── */
+::selection { background: hsl(var(--primary) / 0.18); color: hsl(var(--foreground)); }
